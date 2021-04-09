@@ -45,8 +45,8 @@ export default function MatchList({ editMode = false }) {
                 />
                 <div className='ml-2 w-100'>
                   <div>
-                    <span className='font-weight-bold'>{match.team_1}</span> <span className='smaller'>Vs</span>{' '}
-                    <span className='font-weight-bold'>{match.team_2}</span>
+                    <span className='font-weight-bold'>{match.team_1.name}</span> <span className='smaller'>Vs</span>{' '}
+                    <span className='font-weight-bold'>{match.team_2.name}</span>
                   </div>
                   <div className='d-flex team-stats align-items-center text-secondary'>
                     <div className='mr-3'>

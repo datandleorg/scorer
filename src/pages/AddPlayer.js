@@ -5,6 +5,28 @@ import Footer from '../Components/Footer';
 import plus from '../assets/plus2.svg';
 import { getData, putData } from '../utils/storgeService';
 
+const defaultStats = {
+  stats: {
+    matches: 0,
+    runs: 0,
+    innings: 0,
+    HS: 0,
+    avg: 0,
+    st_rate: 0,
+    thirties: 0,
+    fifties: 0,
+    fours: 0,
+    sixes: 0,
+    bowl_runs: 0,
+    bowl_avg: 0,
+    bowl_st_rate: 0,
+    econ: 0,
+    wkts: 0,
+    BF: 0,
+    overs: 0,
+  },
+};
+
 export default function AddPlayer() {
   const [playerForm, setPlayerForm] = useState({
     name: '',
@@ -28,7 +50,7 @@ export default function AddPlayer() {
   const createPlayer = () => {
     let players = getData('players');
     if (!players) players = [];
-    players.push({ ...playerForm, id: players.length + 1 });
+    players.push({ ...playerForm, id: players.length + 1, ...defaultStats });
     putData('players', players);
     redirectTo('/players');
   };

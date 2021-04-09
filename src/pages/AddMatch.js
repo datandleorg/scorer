@@ -16,6 +16,7 @@ export default function AddMatch() {
     overs: 8,
   });
 
+  const [teamsOptions, setTeamsOptions] = useState([]);
   const [teams, setTeams] = useState([]);
   const history = useHistory();
 
@@ -37,15 +38,22 @@ export default function AddMatch() {
   const getTeamData = () => {
     let teamsArr = getData('teams');
     let teamsData = teamsArr ? teamsArr : [];
-    let teams = teamsData.map((t) => {
+    let teamsOptions = teamsData.map((t) => {
       return {
         label: t.name,
-        value: t.name,
+        value: t.id,
         color: '#000000',
       };
     });
 
-    setTeams([...teams]);
+    setTeamsOptions([...teamsOptions]);
+    setTeams([...teamsData]);
+  };
+
+
+  const getTeamById = (teamId) => {
+    let team = teams.find((t) => t.id === teamId);
+    return team;
   };
 
   const createMatch = () => {
@@ -54,36 +62,40 @@ export default function AddMatch() {
     const date = moment();
 
     let match = {
-      team_1: matchForm.team_1.value,
-      team_2: matchForm.team_2.value,
+      [`team_${matchForm.team_1.value}`]: getTeamById(matchForm.team_1.value),
+      [`team_${matchForm.team_2.value}`]: getTeamById(matchForm.team_2.value),
       toss_won_by: matchForm.toss_won_by.value,
       batting_first: matchForm.batting_first.value,
       overs: matchForm.overs,
       date: date.format('DD/MM/YYYY'),
+      teams:[matchForm.team_1.value,matchForm.team_2.value],
       scorecard: {
         innings_1: {
           runs: 0,
-          wkts: 2,
+          wkts: 0,
           current_over: 0,
-          current_ball: 1,
+          current_ball: 0,
           balls: [],
           target: '',
           striker: '',
           non_striker: '',
           bowler_1: '',
           bowler_2: '',
+          end: false,
+          batting: {},
         },
         innings_2: {
           runs: 0,
-          wkts: 2,
+          wkts: 0,
           current_over: 0,
-          current_ball: 1,
+          current_ball: 0,
           balls: [],
           target: '',
           striker: '',
           non_striker: '',
           bowler_1: '',
           bowler_2: '',
+          end: false,
         },
       },
     };
@@ -112,7 +124,7 @@ export default function AddMatch() {
             <SingleSelect
               name={'team_1'}
               placeholder=''
-              options={teams}
+              options={teamsOptions}
               value={matchForm.team_1}
               isSearchable={true}
               onChange={(value) => {
@@ -125,7 +137,7 @@ export default function AddMatch() {
             <SingleSelect
               name={'team_2'}
               placeholder=''
-              options={teams.filter((t) => t.value !== matchForm.team_1.value)}
+              options={teamsOptions.filter((t) => t.value !== matchForm.team_1.value)}
               value={matchForm.team_2}
               isDisabled={team2_validation}
               isSearchable={true}
@@ -141,12 +153,12 @@ export default function AddMatch() {
               placeholder=''
               options={[
                 {
-                  label: matchForm.team_1.value,
+                  label: matchForm.team_1.label,
                   value: matchForm.team_1.value,
                   color: '#000000',
                 },
                 {
-                  label: matchForm.team_2.value,
+                  label: matchForm.team_2.label,
                   value: matchForm.team_2.value,
                   color: '#000000',
                 },
@@ -166,12 +178,12 @@ export default function AddMatch() {
               placeholder=''
               options={[
                 {
-                  label: matchForm.team_1.value,
+                  label: matchForm.team_1.label,
                   value: matchForm.team_1.value,
                   color: '#000000',
                 },
                 {
-                  label: matchForm.team_2.value,
+                  label: matchForm.team_2.label,
                   value: matchForm.team_2.value,
                   color: '#000000',
                 },

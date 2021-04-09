@@ -26,7 +26,7 @@ export default function AddTeam() {
   const createTeam = () => {
     let teams = getData('teams');
     if (!teams) teams = [];
-    teams.push({ ...teamForm, id: teams.length + 1 });
+    teams.push({ ...teamForm, id: teams.length + 1, players:[] });
     putData('teams', teams);
     redirectTo('/teams');
   };
