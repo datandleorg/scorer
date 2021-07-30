@@ -1,92 +1,130 @@
-import React, { useState, useEffect } from 'react';
-import Footer from '../Components/Footer';
-import { useRouteMatch } from 'react-router-dom';
-import { getPlayerById } from '../utils/storgeService';
+import React, { useState, useEffect } from "react";
+import Footer from "../Components/Footer";
+import { useRouteMatch } from "react-router-dom";
+//import { getPlayerById } from "../utils/storgeService";
+import { connect } from "react-redux";
+import axios from "axios";
 
-export default function Player() {
+function Player({ player }) {
   const match = useRouteMatch();
   const {
     params: { playerId },
   } = match;
 
-  const [playerData, setPlayerData] = useState({});
-
-  useEffect(() => {
-    let player = getPlayerById(+playerId);
-    player && setPlayerData({ ...player });
+    const [playerData, setPlayerData] = useState({});
+  
+  // useEffect(() => {
+  //   let player = getPlayerById(+playerId);
+  //   player && setPlayerData({ ...player });
+  // }, []);
+ //const playerId = playerId;
+ useEffect(() => { 
+ axios({
+    url: "http://localhost:8000/graphql",
+    method: "post",
+    data: {
+      query: `query GetPlayerById($playerId:ID!){
+            getPlayerById(playerId:$playerId){
+              _id
+              name
+              run
+              wickets
+              battingStyle
+              bowlingStyle
+            }
+          }`,
+      variables: {
+        playerId: playerId,
+      },
+    },
+  })
+    .then((res) => {
+      //console.log(res.data.data.getPlayerById);
+      return setPlayerData(res.data.data.getPlayerById); 
+    })
+    .catch((err) => {
+      console.log(err);
+    });
   }, []);
 
+  
   return (
     <React.Fragment>
-      <div className='player-page full-height'>
-        <div className='d-flex team-page-header justify-content-between align-items-center mt-3 border-bottom pb-2'>
-          <img src={playerData.image || "https://www.searchpng.com/wp-content/uploads/2019/02/Men-Profile-Image-715x657.png"} className='rounded-circle playerpic mr-3' />
-          <div className='h5' style={{ textAlign: 'right' }}>
+      <div className="player-page full-height">
+        <div className="d-flex team-page-header justify-content-between align-items-center mt-3 border-bottom pb-2">
+          <img alt=""
+            src={
+              //playerData.image ||
+              "https://www.searchpng.com/wp-content/uploads/2019/02/Men-Profile-Image-715x657.png"
+            }
+            className="rounded-circle playerpic mr-3"
+          />
+          <div className="h5" style={{ textAlign: "right" }}>
             <div>{playerData.name}</div>
-            <div className='smaller text-muted'>Right Hand Batsmen</div>
+            <div className="smaller text-muted">{playerData.batting_style}</div>
           </div>
         </div>
-        <div className='mt-2 w-100 border rounded p-3 player-stats-card'>
-          <div className='font-weight-bold mb-2'>Info</div>
-          <div className='text-secondary'>
-            <div className='d-flex justify-content-between small mb-1'>
+        <div className="mt-2 w-100 border rounded p-3 player-stats-card">
+          <div className="font-weight-bold mb-2">Info</div>
+          <div className="text-secondary">
+            <div className="d-flex justify-content-between small mb-1">
               <div>Matches</div>
-              <div>{playerData.matches}</div>
+              <div>0{/*playerData[0].stats.matches*/}</div>
             </div>
           </div>
         </div>
-        <div className='mt-2 w-100 border rounded p-3 player-stats-card'>
-          <div className='font-weight-bold mb-2'>Batting</div>
-          <div className='text-secondary'>
-            <div className='d-flex justify-content-between align-items-center small mb-1'>
+        <div className="mt-2 w-100 border rounded p-3 player-stats-card">
+          <div className="font-weight-bold mb-2">Batting</div>
+          <div className="text-secondary">
+            <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Runs</div>
-              <div className='h3 text-info'>{playerData.runs}</div>
+              <div className="h3 text-info">{playerData.run}</div>
             </div>
-            <div className='d-flex justify-content-between align-items-center small mb-1'>
+            <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Avg</div>
-              <div>{playerData.avg}</div>
+              <div>{/*playerData[0].stats.avg*/}0</div>
             </div>
-            <div className='d-flex justify-content-between align-items-center small mb-1'>
+            <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>SRate</div>
-              <div>{playerData.srate} %</div>
+              <div>{/*playerData[0].stats.srate*/} 0%</div>
             </div>
           </div>
         </div>
-        <div className='mt-2 w-100 border rounded p-3 player-stats-card'>
-          <div className='font-weight-bold mb-2'>Bowling</div>
-          <div className='text-secondary'>
-            <div className='d-flex justify-content-between align-items-center small mb-1'>
+        <div className="mt-2 w-100 border rounded p-3 player-stats-card">
+          <div className="font-weight-bold mb-2">Bowling</div>
+          <div className="text-secondary">
+            <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Wkts</div>
-              <div className='h3 text-warning'>{playerData.matches}</div>
+              <div className="h3 text-warning">{playerData.wickets}</div>
             </div>
-            <div className='d-flex justify-content-between align-items-center small mb-1'>
+            <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Bowl Avg</div>
-              <div>{playerData.runs}</div>
+              <div>{/*playerData[0].stats.runs*/}0</div>
             </div>
-            <div className='d-flex justify-content-between  align-items-center small mb-1'>
+            <div className="d-flex justify-content-between  align-items-center small mb-1">
               <div>Bowl SRate</div>
-              <div>{playerData.avg}</div>
+              <div>{/*playerData[0].stats.avg*/}0</div>
             </div>
-            <div className='d-flex justify-content-between align-items-center small mb-1'>
+            <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Overs</div>
-              <div>{playerData.srate} %</div>
+              <div>{/*playerData[0].stats.srate*/} 0%</div>
             </div>
           </div>
         </div>
-        <div className='mt-2 w-100 border rounded p-3 player-stats-card'>
-          <div className='font-weight-bold mb-2'>Fielding</div>
-          <div className='text-secondary'>
-            <div className='d-flex justify-content-between align-items-center small mb-1'>
+        <div className="mt-2 w-100 border rounded p-3 player-stats-card">
+          <div className="font-weight-bold mb-2">Fielding</div>
+          <div className="text-secondary">
+            <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Catches</div>
-              <div className='h3 text-danger'>{playerData.matches}</div>
+              <div className="h3 text-danger">{/*playerData[0].stats.matches*/}0</div>
             </div>
-            <div className='d-flex justify-content-between align-items-center small mb-1'>
+            <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Run Outs</div>
-              <div>{playerData.runs}</div>
+              <div>{/*playerData[0].stats.runs*/}0</div>
             </div>
-            <div className='d-flex justify-content-between  align-items-center small mb-1'>
+            <div className="d-flex justify-content-between  align-items-center small mb-1">
               <div>Stumpings</div>
-              <div>{playerData.avg}</div>
+              <div>{/*playerData[0].stats.avg*/}0</div>
             </div>
           </div>
         </div>
@@ -95,3 +133,11 @@ export default function Player() {
     </React.Fragment>
   );
 }
+
+const mapStateToProps = (state) => {
+  return {
+    player: state.player,
+  };
+};
+
+export default connect(mapStateToProps)(Player);

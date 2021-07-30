@@ -53,7 +53,7 @@ class Modal extends React.Component {
               {this.props.title || 'title'}
             </div>
             <div>
-              <img onClick={this.props.onClose} src={close} width='30px' />
+              <img onClick={this.props.onClose} src={close} width='30px' alt=""/>
             </div>
           </div>
           <hr></hr>

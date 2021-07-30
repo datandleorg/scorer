@@ -12,7 +12,7 @@ export default function Header() {
   return (
     <div className='header p-2'>
       <div className='title d-flex justify-content-between align-items-center' onClick={() => redirectTo('/')}>
-        <img src={ball} style={{ width: '18px' }} className='mr-2' />
+        <img src={ball} style={{ width: '18px' }} className='mr-2' alt="" />
         <div className='text-secondary'>
           SCORE<span className='text-danger'>BOARD</span>
         </div>
