@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import close from "../assets/close.png";
 import { useHistory } from "react-router-dom";
 import Footer from "../Components/Footer";
@@ -9,9 +9,11 @@ import moment from "moment";
 import { connect } from "react-redux";
 import { addingmatch } from "../actions/actions";
 import Auth from "../context/auth-context";
-import axios from "axios";
+import { CreateMatch } from "../services/matchservice";
+import { getTeam } from "../services/teamservice";
+import Loader from "../Components/Common/Loader";
 
-function AddMatch({ dispatch,team }) {
+function AddMatch({ dispatch, team }) {
   const [match, setMatchForm] = useState({
     team_1: "",
     team_2: "",
@@ -22,6 +24,7 @@ function AddMatch({ dispatch,team }) {
   const context = useContext(Auth);
   //const [teamsOptions, setTeamsOptions] = useState([]);
   const [teams, setTeams] = useState([]);
+  const [loading, setloading] = useState(false);
   const history = useHistory();
   // useEffect(() => {
   //   getTeamData();
@@ -35,56 +38,35 @@ function AddMatch({ dispatch,team }) {
     setMatchForm({ ...match, [key]: value });
   };
 
-  //const getTeamData = () => {
-  //let teamsArr = getData('teams');
+  useEffect(() => {
+    getTeam()
+      .then((res) => {
+        console.log(res.data.data);
+        return setTeams(res.data.data.teams);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  const userallowed = context.userId;
+  const teamsOption = teams.filter((tm) => tm.user._id === userallowed);
 
-  axios({
-    url: "http://localhost:8000/graphql",
-    method: "post",
-    data: {
-      query: `query{
-                  teams{
-                _id
-                name
-                score
-                matches
-                won
-                loss
-                tie
-              }
-          }`,
-    },
-  })
-    .then((res) => {
-      return setTeams(res.data.data.teams);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  let teamsOptions = [];
-  let teamsArr = teams;
-  let teamsData = teamsArr ? teamsArr : [];
-
-  let teamsOption = teamsData.map((t) => {
+  const teamsOptions = teamsOption.map((t) => {
     return {
       label: t.name,
       value: t._id,
-      color: "#000000",
     };
   });
-  teamsOptions = teamsOption;
   // const getTeamById = (teamId) => {
   //   let team = teams.find((t) => t.id === teamId);
   //   return team;
   // };
-
   const createMatch = () => {
-    let matches = []; // getData('matches');
+    // getData('matches');
     console.log(match);
+
     // if (!matches) matches = [];
-
     const date = moment();
-
     let matchvalue = {
       //  [`team_${match.team_1.value}`]: match.team_1.id,//getTeamById(match.team_1.value),
       //  [`team_${match.team_2.value}`]: match.team_2.id,//getTeamById(match.team_2.value),
@@ -125,58 +107,37 @@ function AddMatch({ dispatch,team }) {
         },
       },
     };
-    matches = { ...matchvalue, id: matches.length + 1 };
-    //putData('matches', matches);
-    //match = matches;
-    // let match = matches.map((m,index)=>{
-    //  return { m,
-    //         id:index+1
-    //       }
-    // });
-    dispatch(addingmatch(matches));
-    console.log(matches);
-    redirectTo("/matches");
-    const overs = +matches.overs;
-    const team1 = matches.team_1.label;
-    const team2 = matches.team_2.label;
-    const tossWonBy = matches.toss_won_by.label;
-    const battingFirst = matches.batting_first.label;
 
-    const token = context.token;
-    axios({
-      url: "http://localhost:8000/graphql",
-      method: "post",
-      data: {
-        query: `mutation CreateMatch($overs:Int!,$team1:String!,$team2:String!,$tossWonBy:String!,$battingFirst:String!){
-                    createMatch(matchInput:{overs:$overs,team1:$team1,team2:$team2,tossWonBy:$tossWonBy,battingFirst:$battingFirst}){
-                     _id
-                     overs
-                     team1
-                     team2
-                     tossWonBy
-                     battingFirst 
-                    }
-             }`,
-        variables: {
-          overs: overs,
-          team1: team1,
-          team2: team2,
-          tossWonBy: tossWonBy,
-          battingFirst: battingFirst,
-        },
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token
-      }
-    })
+    let matches = [];
+    matches.push({ ...matchvalue, id: matches.length + 1 });
+    dispatch(addingmatch(matches));
+    console.log(matchvalue.team_1);
+    const matchData = {
+      overs: +matchvalue.overs,
+      team1: matchvalue.team_1.value,
+      team2: matchvalue.team_2.value,
+      tossWonBy: matchvalue.toss_won_by.label,
+      battingFirst: matchvalue.batting_first.label,
+      token: context.token,
+    };
+    setloading(true);
+    CreateMatch(matchData)
       .then((res) => {
         console.log(res);
+        setloading(false);
+        redirectTo("/matches");
       })
       .catch((err) => {
         console.log(err);
       });
   };
+  //putData('matches', matches);
+  //match = matches;
+  // let match = matches.map((m,index)=>{
+  //  return { m,
+  //         id:index+1
+  //       }
+  // });
 
   const team2_validation = match.team_1 === "";
   const toss_won_by_validation = match.team_1 === "" || match.team_2 === "";
@@ -188,7 +149,12 @@ function AddMatch({ dispatch,team }) {
         <div className="p-2 h5 text-secondary border-bottom d-flex align-items-center justify-content-between">
           <div>Add Match</div>
           <div onClick={() => redirectTo(`/matches`)}>
-            <img src={close} width="30px" alt=""/>
+            <img
+              src={close}
+              width="30px"
+              alt=""
+              style={{ cursor: "pointer" }}
+            />
           </div>
         </div>
 
@@ -211,8 +177,10 @@ function AddMatch({ dispatch,team }) {
             <SingleSelect
               name={"team_2"}
               placeholder=""
-              options={teamsOptions} //.filter((t) => t.value === match.team_1.value)}
-              value={match.team_2} //match.team_2}
+              options={teamsOptions.filter(
+                (t) => t.value !== match.team_1.value
+              )}
+              value={match.team_2}
               isDisabled={team2_validation}
               isSearchable={true}
               onChange={(value) => {
@@ -225,18 +193,18 @@ function AddMatch({ dispatch,team }) {
             <SingleSelect
               name={"toss_won_by"}
               placeholder=""
-              options={teamsOptions}
-              //   {
-              //     label: match.team_1.label,
-              //     value: match.team_1.value,
-              //     color: '#000000',
-              //   },
-              //   {
-              //     label: match.team_2.label,
-              //     value: match.team_2.value,
-              //     color: '#000000',
-              //   },
-              // ]}
+              options={[
+                {
+                  label: match.team_1.label,
+                  value: match.team_1.value,
+                  color: "#000000",
+                },
+                {
+                  label: match.team_2.label,
+                  value: match.team_2.value,
+                  color: "#000000",
+                },
+              ]}
               value={match.toss_won_by}
               isDisabled={toss_won_by_validation}
               isSearchable={true}
@@ -250,19 +218,18 @@ function AddMatch({ dispatch,team }) {
             <SingleSelect
               name={"batting_first"}
               placeholder=""
-              options={teamsOptions}
-              // {[
-              //   {
-              //     label: match.team_1.label,
-              //     value: match.team_1.value,
-              //     color: '#000000',
-              //   },
-              //   {
-              //     label: match.team_2.label,
-              //     value: match.team_2.value,
-              //     color: '#000000',
-              //   },
-              // ]}
+              options={[
+                {
+                  label: match.team_1.label,
+                  value: match.team_1.value,
+                  color: "#000000",
+                },
+                {
+                  label: match.team_2.label,
+                  value: match.team_2.value,
+                  color: "#000000",
+                },
+              ]}
               value={match.batting_first}
               isDisabled={batting_first_validation}
               isSearchable={true}
@@ -300,6 +267,7 @@ function AddMatch({ dispatch,team }) {
         </div>
       </div>
       <Footer />
+      {loading && <Loader status={true} />}
     </React.Fragment>
   );
 }
@@ -309,5 +277,4 @@ const mapStateToProps = (state) => {
     team: state.team,
   };
 };
-
 export default connect(mapStateToProps)(AddMatch);

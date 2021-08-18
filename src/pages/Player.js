@@ -3,7 +3,7 @@ import Footer from "../Components/Footer";
 import { useRouteMatch } from "react-router-dom";
 //import { getPlayerById } from "../utils/storgeService";
 import { connect } from "react-redux";
-import axios from "axios";
+import { getPlayerById } from "../services/playerservice";
 
 function Player({ player }) {
   const match = useRouteMatch();
@@ -19,32 +19,14 @@ function Player({ player }) {
   // }, []);
  //const playerId = playerId;
  useEffect(() => { 
- axios({
-    url: "http://localhost:8000/graphql",
-    method: "post",
-    data: {
-      query: `query GetPlayerById($playerId:ID!){
-            getPlayerById(playerId:$playerId){
-              _id
-              name
-              run
-              wickets
-              battingStyle
-              bowlingStyle
-            }
-          }`,
-      variables: {
-        playerId: playerId,
-      },
-    },
-  })
-    .then((res) => {
-      //console.log(res.data.data.getPlayerById);
+    getPlayerById(playerId).then((res) => {
+      console.log(res.data.data.getPlayerById);
       return setPlayerData(res.data.data.getPlayerById); 
     })
     .catch((err) => {
       console.log(err);
     });
+  
   }, []);
 
   
@@ -54,7 +36,7 @@ function Player({ player }) {
         <div className="d-flex team-page-header justify-content-between align-items-center mt-3 border-bottom pb-2">
           <img alt=""
             src={
-              //playerData.image ||
+              playerData.image ||
               "https://www.searchpng.com/wp-content/uploads/2019/02/Men-Profile-Image-715x657.png"
             }
             className="rounded-circle playerpic mr-3"

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Footer from "../Components/Footer";
 import SingleSelect from "../Components/SingleSelect/SingleSelect";
 //import { getTeamById, getData, updateTeamById, getPlayerById } from '../utils/storgeService';
+import Auth from "../context/auth-context";
 import { connect } from "react-redux";
-import axios from "axios";
+import { getPlayerData } from "../services/playerservice";
+import { getTeamById, AddPlayerToTeam } from "../services/teamservice";
 
 function Team({ team }) {
   const match = useRouteMatch();
@@ -12,14 +14,12 @@ function Team({ team }) {
     params: { teamId },
   } = match;
   const history = useHistory();
-
+  const context = useContext(Auth);
   const [teamData, setTeamData] = useState({});
   const [players, setPlayers] = useState([]);
+  const [currplayer, setcurrplayer] = useState({});
   const [selectedPlayer, setSelectedPlayer] = useState({});
   // const [updateData, setUpdateData] = useState(0)
-  console.log(teamId);
-  const [player,setPlayer] = useState({});
-  let playerss=[];
   // useEffect(() => {
   //   let team = getTeamById(+teamId);
   //   team && setTeamData({ ...team });
@@ -31,29 +31,23 @@ function Team({ team }) {
   // useEffect(() => {
   //   updateTeamById(teamData.id, teamData);
   // }, [teamData.players]);
-
   const redirectTo = (route) => {
     history.push(route);
   };
   useEffect(() => {
-    axios({
-      url: "http://localhost:8000/graphql",
-      method: "post",
-      data: {
-        query: `query {
-              players{
-              _id
-              name
-              run
-              wickets
-              battingStyle
-              bowlingStyle
-            }
-          }`,
-      },
-    })
+    getTeamById(teamId)
       .then((res) => {
-        console.log(res.data.data.players);
+        console.log(res.data.data.getTeamById);
+        return setTeamData(res.data.data.getTeamById);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    getPlayerData()
+      .then((res) => {
         return setPlayers(res.data.data.players);
       })
       .catch((err) => {
@@ -63,76 +57,33 @@ function Team({ team }) {
 
   const handlePlayer = (player) => {
     console.log(player);
+    console.log(teamData.players);
     setSelectedPlayer({ ...player });
-    console.log(selectedPlayer);
+    setcurrplayer({ ...player });
   };
 
   const addPlayerToTeam = () => {
-    console.log(selectedPlayer);
-    
     const playerId = selectedPlayer.id;
-    axios({
-      url: "http://localhost:8000/graphql",
-      method: "post",
-      data: {
-        query: `query GetPlayerById($playerId:ID!){
-                getPlayerById(playerId:$playerId){
-                _id
-                name
-                run
-                wickets
-                battingStyle
-                bowlingStyle
-              }
-            }`,
-        variables: {
-          playerId: playerId,
-        },
-      },
-    })
+
+    AddPlayerToTeam(playerId, teamId)
       .then((res) => {
-        console.log(res.data.data.getPlayerById);
-        return setPlayer(res.data.data.getPlayerById);
+        console.log(res.data.data.addPlayerToTeam);
+        return setTeamData(res.data.data.addPlayerToTeam);
       })
       .catch((err) => {
         console.log(err);
       });
-console.log(player);
-      axios({
-        url: "http://localhost:8000/graphql",
-        method: "post",
-        data: {
-          query: `query GetTeamById($teamId:ID!){
-                  getTeamById(teamId:$teamId){
-                  _id
-                  name
-                  score
-                  won
-                  loss
-                  tie                 
-                }
-              }`,
-              variables:{
-                teamId:teamId
-              }
-        },
-      })
-        .then((res) => {
-          console.log(res.data.data.getTeamById);
-        return setTeamData({teamData:res.data.data.getTeamById,playerss:[...teamData.playerss,player]}); 
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-        console.log(teamData.playerss);
-    // setTeamData({ ...teamData,
-    //   playerss:[]});
+    setSelectedPlayer({});
   };
 
-  const playerOptions = players.map((p) => {
-    return { label: p.name, id: p._id };
+  const playerOption = players.filter((p) => p.user._id === context.userId);
+  const playerOptions = playerOption.map((p) => {
+    return {
+      label: p.name,
+      id: p._id,
+    };
   });
-  console.log(teamData);
+  console.log(playerOptions);
   return (
     <React.Fragment>
       <div className="team-page full-height">
@@ -140,7 +91,7 @@ console.log(player);
           <img
             alt=""
             src={
-              //teamData.image ||
+              teamData.image ||
               "https://img2.pngio.com/clipart-cricket-batsman-logo-cricket-logo-png-900_520.jpg"
             }
             className="rounded-circle teampic mr-3"
@@ -170,7 +121,7 @@ console.log(player);
               <SingleSelect
                 name={"players"}
                 placeholder=""
-                options={playerOptions}
+                options={playerOptions.filter((p) => p.id !== currplayer.id)}
                 value={selectedPlayer}
                 isSearchable={true}
                 onChange={(value) => {
@@ -190,21 +141,21 @@ console.log(player);
             </div>
           </div>
           <div className="mt-3">
-            {teamData.playerss &&
-              teamData.playerss.map((player, playerIndex) => {
+            {teamData.players &&
+              teamData.players.map((player, playerIndex) => {
                 return (
                   <div
                     className="border player-list-item p-2 shadow-sm mb-2"
                     key={`team-${playerIndex}`}
                     onClick={() => {
-                      redirectTo(`/player/info/${player.id}`);
+                      redirectTo(`/player/info/${player._id}`);
                     }}
                   >
                     <div className="d-flex align-items-center">
                       <img
                         alt=""
                         src={
-                          //player.image ||
+                          player.image ||
                           "https://www.searchpng.com/wp-content/uploads/2019/02/Men-Profile-Image-715x657.png"
                         }
                         className="rounded-circle playerpic mr-2"

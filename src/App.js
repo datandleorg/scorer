@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense ,useState} from 'react';
 import './App.scss';
 import Header from './Components/Header';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -6,6 +6,8 @@ import ErrorBoundary from './utils/ErrorBoundary';
 import Loader from './Components/Common/Loader';
 import Auth from './context/auth-context';
 
+const Login = React.lazy(() => import('./pages/login'));
+const signup = React.lazy(() => import('./pages/signuppage'));
 const Home = React.lazy(() => import('./pages/Home'));
 const TeamList = React.lazy(() => import('./pages/TeamList'));
 const Team = React.lazy(() => import('./pages/Team'));
@@ -17,15 +19,42 @@ const AddPlayer = React.lazy(() => import('./pages/AddPlayer'));
 const AddTeam = React.lazy(() => import('./pages/AddTeam'));
 const AddMatch = React.lazy(() => import('./pages/AddMatch'));
 
+
+
+
 function App() {
+  const currentToken = localStorage.getItem("tokens");
+  const currentUserId = localStorage.getItem("user"); ;
+const [token,setToken] = useState(currentToken);
+const [userId,setUserId] = useState(currentUserId);
+  const login = (token, userId, tokenExpiration) => {
+    localStorage.setItem("tokens",token);
+    localStorage.setItem("user",userId);
+    setToken(token);
+    setUserId(userId);
+  };
+
+  const logout = () => {
+     setToken(null);
+     setUserId(null)
+  };
+
+
   return (
     <div className='App'>
       <ErrorBoundary>
         <Suspense fallback={<Loader status={true} />}>
-          <Auth.Provider>
+          <Auth.Provider value={{
+              token: token,
+              userId: userId,
+              login: login,
+              logout: logout
+            }}>
           <Router>
             <Header />
-            <Route exact path='/' component={Home} />
+            {!token && <Route exact path='/' component={Login} />}
+            {!token && <Route exact path='/signup' component={signup} />}
+            {token && <Route exact path='/' component={Home} />}
             <Route exact path='/teams' component={TeamList} />
             <Route exact path='/team/info/:teamId' component={Team} />
             <Route exact path='/team/add' component={AddTeam} />
@@ -40,7 +69,7 @@ function App() {
         </Suspense>
       </ErrorBoundary>
     </div>
-  );
+      );
 }
 
 export default App;

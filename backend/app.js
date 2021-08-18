@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const{graphqlHTTP} = require("express-graphql");
+const isAuth = require("./middleware/is-Auth"); 
 
 const DbSchema = require("./schema/index");
 const DbResolvers = require("./resolvers/index")
@@ -17,7 +18,7 @@ app.use((req, res, next) => {
     }
     next();
   });
-
+app.use(isAuth);
 app.use(
     '/graphql',
     graphqlHTTP({
@@ -27,7 +28,7 @@ app.use(
     })
 );
 
-mongoose.connect(`mongodb+srv://keerthivasan010799:WubCUjYoxuqXpCHr@cluster0.4ncns.mongodb.net/scorerdb?retryWrites=true&w=majority`)
+mongoose.connect(`mongodb+srv://keerthivasan010799:SnliBX2kGbIc5Zor@cluster0.4ncns.mongodb.net/scorerdb?retryWrites=true&w=majority`)
 .then(()=>{
     app.listen(8000);
 }).catch(err=>

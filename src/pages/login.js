@@ -1,105 +1,83 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import Auth from "../context/auth-context";
-import axios from "axios";
+import { login } from "../services/loginservices";
 
 const Login = (props) => {
   const context = useContext(Auth);
-
-  const [login, setLogin] = useState({});
-  const [isLogin, setIsLogin] = useState(true);
+  const [Login, setLogin] = useState({});
+  const history = useHistory();
+  const redirectTo = (route) => {
+    history.push(route);
+  };
   const handleForm = (value, key) => {
-    setLogin({ ...login, [key]: value });
-    console.log(login);
+    setLogin({ ...Login, [key]: value });
+    console.log(Login);
   };
-  const switchModeHandler = () => {
-    setIsLogin(!isLogin);
-  };
-  const submitHandler=(e)=>{
-      console.log(isLogin);
-    e.preventDefault();
-      const email = login.email;
-      const password = login.password;
-      if(isLogin){
-      axios({url:"http://localhost:8000/graphql",
-            method:'post',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            data:{
-                query:`query LogIn($email:String!,$password:String!){
-                login(email:$email,password:$password){
-                    token
-                    userId
-                    tokenExpiration
-                }
-            }`,
-                variables:{
-                    email:email,
-                    password:password
-                },
-            }
-    }).then(res=>{
+  const loginHandler = () => {
+    const email = Login.email;
+    const password = Login.password;
+    login(email, password)
+      .then((res) => {
         console.log(res.data.data);
         context.login(
           res.data.data.login.token,
           res.data.data.login.userId,
           res.data.data.login.tokenExpiration
         );
-    }).catch(err=>{console.log(err)})
-    }else{
-        axios({url:"http://localhost:8000/graphql",
-            method:'post',
-            data:{
-                query:`mutation CreateUser($email:String!,$password:String!){
-                    createUser(userInput:{email:$email,password:$password}){
-                        _id
-                        email
-                    }
-                }`,
-                variables:{
-                    email:email,
-                    password:password
-                },
-            }
-    }).then(res=>{
-        console.log(res);
-    }).catch(err=>{console.log(err)})
-    }
-
-}
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
-      <div>
-    <div className="p-2 h5 text-secondary border-bottom d-flex align-items-center justify-content-between">
-    <div>Login</div>
-    </div>
-    <form
-      className = "text-secondary" onSubmit={submitHandler}
-    >
-      <div class="form-group">
-        <label>E-mail</label>
-        <input
-          class="form-control"
-          name="email"
-          value={login.email}
-          onChange={(e) => handleForm(e.target.value, e.target.name)}
-        />
+    <div class="m-4">
+      <div
+        className="p-3 h5 d-flex col-md-2 mx-auto"
+        style={{ alignItems: "center" }}
+      >
+        Login
       </div>
-      <div class="form-group">
-        <label>Password</label>
-        <input
-          class="form-control"
-          name="password"
-          value={login.password}
-          onChange={(e) => handleForm(e.target.value, e.target.name)}
-        />
-      </div>
-      <div className="form-actions mt-2">
-        <button class="btn btn-md btn-primary w-30" type="submit">Submit</button>
-        <button class="btn btn-md btn-primary w-30 ml-3" type="button" onClick={switchModeHandler}>
-          Switch to {isLogin ? "Signup" : "Login"}
-        </button>
-      </div>
-    </form>
+      <form className="text-secondary">
+        <div class="form-group">
+          <label>E-mail</label>
+          <input
+            class="form-control"
+            name="email"
+            value={Login.email}
+            onChange={(e) => handleForm(e.target.value, e.target.name)}
+          />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input
+            class="form-control"
+            name="password"
+            value={Login.password}
+            onChange={(e) => handleForm(e.target.value, e.target.name)}
+          />
+        </div>
+        <div className="form-actions mb-5 mt-2">
+          <button
+            class="btn btn-md btn-primary w-100"
+            type="button"
+            onClick={loginHandler}
+          >
+            Login
+          </button>
+        </div>
+        Create an account?
+        <a
+          href=""
+          class=" w-30 ml-3"
+          type="button"
+          onClick={() => {
+            redirectTo("/signup");
+          }}
+        >
+          signup
+        </a>
+      </form>
     </div>
   );
 };

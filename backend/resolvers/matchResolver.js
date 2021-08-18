@@ -1,50 +1,106 @@
 const Match = require("../models/matches");
 
 module.exports = {
-    matches:async ()=>{
-        try{
-           const matches = await Match.find();
-        return matches.map(match=>{
-            return{
-                ...match._doc,
-                _id:match.id
-            }
+  matches: async () => {
+    try {
+      const matches = await Match.find()
+        .populate({
+          path: "team1",
+          model: "Team",
+          populate: { path: "players", model: "Player" },
         })
-        }
-        catch(err){
-            console.log(err)
-        }
-    },
-    createMatch:async(args)=>{
-            const match = new Match({
-                overs:args.matchInput.overs,
-                team1:args.matchInput.team1,//team
-                team2:args.matchInput.team2,//team
-                tossWonBy:args.matchInput.tossWonBy,
-                battingFirst:args.matchInput.battingFirst
-                })
-            try{
-                const result = await match.save();
-                return({
-                    ...result._doc,
-                    _id:result.id
-                })
-            }
-            catch(err){
-                console.log(err);
-            }
-    },
-    deleteMatch:async (args)=>{
-        try{
-        const matchdelete = await Match.findById(args.matchId);
-        await Match.deleteOne({_id:args.matchId});
-        return({
-            ...matchdelete._doc,
-            _id:matchdelete.id
+        .populate({
+          path: "team2",
+          model: "Team",
+          populate: { path: "players", model: "Player" },
         })
+        .exec();
+      return matches;
+    } catch (err) {
+      console.log(err);
     }
-    catch(err){
-        console.log(err);
+  },
+  createMatch: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error("Unauthenticated!");
     }
+    const match = new Match({
+      overs: args.matchInput.overs,
+      team1: args.matchInput.team1,
+      team2: args.matchInput.team2,
+      tossWonBy: args.matchInput.tossWonBy,
+      battingFirst: args.matchInput.battingFirst,
+      user: req.userId,
+    });
+    try {
+      const matches = await match.save();
+
+      const scorecard = {
+        scorecard: {
+          innings1: {},
+          innings2: {},
+          result: {},
+        },
+      };
+      const matchUpdate = await Match.findByIdAndUpdate(
+        matches._id,
+        scorecard,
+        {
+          returnNewDocument: true,
+          new: true,
+          strict: false,
+        }
+      );
+      matchUpdated.set("scorecard", scorecard);
+
+      await matchUpdate.save();
+      const updatedmatch = Match.findById(matches._id)
+        .populate({
+          path: "team1",
+          model: "Team",
+          populate: { path: "players", model: "Player" },
+        })
+        .populate({
+          path: "team2",
+          model: "Team",
+          populate: { path: "players", model: "Player" },
+        })
+        .populate("scorecard")
+        .exec();
+      return updatedmatch;
+    } catch (err) {
+      console.log(err);
     }
-}
+  },
+  getMatchById: async ({ matchId }) => {
+    try {
+      const matches = await Match.findById(matchId)
+        .populate({
+          path: "team1",
+          model: "Team",
+          populate: { path: "players", model: "Player" },
+        })
+        .populate({
+          path: "team2",
+          model: "Team",
+          populate: { path: "players", model: "Player" },
+        })
+        .exec();
+      return matches;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  deleteMatch: async (args) => {
+    try {
+      const matchdelete = await Match.findById(args.matchId);
+      await Match.deleteOne({ _id: args.matchId });
+      return {
+        ...matchdelete._doc,
+        _id: matchdelete.id,
+      };
+    } catch (err) {
+      console.log(err);
+    }
+  },
+};

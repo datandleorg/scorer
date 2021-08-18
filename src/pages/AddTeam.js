@@ -1,4 +1,4 @@
-import React, { useState,useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import close from "../assets/close.png";
 import { useHistory } from "react-router-dom";
 import Footer from "../Components/Footer";
@@ -8,6 +8,8 @@ import Auth from "../context/auth-context";
 import { addteam } from "../actions/actions";
 import { connect } from "react-redux";
 import axios from "axios";
+import { CreateTeam } from "../services/teamservice";
+import Loader from "../Components/Common/Loader";
 
 function AddTeam({ dispatch, team }) {
   const [teamForm, setTeamForm] = useState({
@@ -15,55 +17,62 @@ function AddTeam({ dispatch, team }) {
     image: "",
   });
   const history = useHistory();
-
+  const [loading, setloading] = useState(false);
   const context = useContext(Auth);
   const redirectTo = (route) => {
     history.push(route);
   };
 
+  const teamimageUpload = useRef();
+
+  const [teamImage, setImage] = useState();
   const handleForm = (value, key) => {
     setTeamForm({ ...teamForm, [key]: value });
+  };
+  const addingTeamImage = () => {
+    teamimageUpload.current.click();
+  };
+  const changeHandler = (e) => {
+    const data = new FormData();
+    data.append("image", e.target.files[0]);
+    setloading(true);
+    axios({
+      url: "http://localhost:3002/single",
+      method: "post",
+      data: data,
+    })
+      .then((res) => {
+        console.log(res.data);
+        setImage(res.data);
+        setloading(false);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   };
 
   const createTeam = () => {
     let teams = team;
     teams.push({ ...teamForm, id: teams.length + 1, players: [] });
-    console.log(teams);
-    dispatch(addteam(teams));
-    redirectTo("/teams");
-console.log(teamForm.name);
 
-    const name = teamForm.name;
-    const token = context.token;
-    axios({
-      url: "http://localhost:8000/graphql",
-      method: "post",
-      data: {
-        query: `mutation CreateTeam($name:String!){
-                createTeam(teamInput:{name:$name,score:450,matches:4,won:2,loss:1,tie:1}){
-                  _id
-                  name
-                  score
-                  matches
-                  won
-                  loss
-                  tie
-                }
-            }`,
-        variables: {
-          name: name,
-        },
-      },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + token
-      }
-    })
+    dispatch(addteam(teams));
+    console.log(teamForm.name);
+
+    const data = {
+      name: teamForm.name,
+      image: teamImage,
+      token: context.token,
+    };
+    setloading(true);
+    CreateTeam(data)
       .then((res) => {
-        console.log(res.data.data.createTeam);
+        console.log(res.data);
+        setloading(false);
+        redirectTo("/teams");
       })
       .catch((err) => {
         console.log(err);
+        setloading(false);
       });
   };
 
@@ -73,21 +82,29 @@ console.log(teamForm.name);
         <div className="p-2 h5 text-secondary border-bottom d-flex align-items-center justify-content-between">
           <div>Add Team</div>
           <div onClick={() => redirectTo(`/teams`)}>
-            <img src={close} width="30px" alt=""/>
+            <img
+              src={close}
+              width="30px"
+              alt=""
+              style={{ cursor: "pointer" }}
+            />
           </div>
         </div>
 
         <div className="text-secondary">
           <div className="d-flex justify-content-center">
             <div style={{ position: "relative" }}>
-              <img alt=""
+              <img
+                alt=""
                 src={
+                  teamImage ||
                   "https://www.searchpng.com/wp-content/uploads/2019/02/Men-Profile-Image-715x657.png"
                 }
                 className="rounded-circle  mr-2"
                 style={{ width: "80px" }}
               />
-              <img alt=""
+              <img
+                alt=""
                 src={plus}
                 style={{
                   position: "absolute",
@@ -96,7 +113,16 @@ console.log(teamForm.name);
                   background: "white",
                   borderRadius: "50%",
                   bottom: "0",
+                  cursor: "pointer",
                 }}
+                onClick={addingTeamImage}
+              />
+              <input
+                type="file"
+                name="image"
+                ref={teamimageUpload}
+                onChange={changeHandler}
+                style={{ display: "none" }}
               />
             </div>
           </div>
@@ -128,6 +154,7 @@ console.log(teamForm.name);
           </div>
         </div>
       </div>
+      {loading && <Loader status={true} />}
       <Footer />
     </React.Fragment>
   );

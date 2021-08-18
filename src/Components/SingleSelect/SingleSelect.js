@@ -15,7 +15,7 @@ export default class SingleSelect extends Component {
       isDisabled = false,
       isLoading = false,
       isSearchable = false,
-      isClearable = true,
+      isClearable = false,
       onChange = ()=>{}
     } = this.props;
 

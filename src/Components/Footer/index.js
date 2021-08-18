@@ -20,7 +20,7 @@ export default function Footer() {
           onClick={() => redirectTo('/teams')}
         >
           <div>
-            <img src={teams} alt="" style={{ width: '50px' }} />
+            <img src={teams} alt="" style={{ width: '50px',cursor:"pointer" }} />
           </div>
           <div>Teams</div>
         </div>
@@ -29,7 +29,7 @@ export default function Footer() {
           onClick={() => redirectTo('/matches')}
         >
           <div>
-            <img src={matches} alt="" style={{ width: '50px' }} />
+            <img src={matches} alt="" style={{ width: '50px',cursor:"pointer" }} />
           </div>
           <div>Matches</div>
         </div>
@@ -38,7 +38,7 @@ export default function Footer() {
           onClick={() => redirectTo('/players')}
         >
           <div>
-            <img src={players} alt="" style={{ width: '50px' }} />
+            <img src={players} alt="" style={{ width: '50px',cursor:"pointer" }} />
           </div>
           <div>Players</div>
         </div>

@@ -1,11 +1,13 @@
-import React, { useState,useRef,useContext } from "react";
+import React, { useState, useRef, useContext } from "react";
 import close from "../assets/close.png";
 import { useHistory } from "react-router-dom";
 import Footer from "../Components/Footer";
 import plus from "../assets/plus2.svg";
 import Auth from "../context/auth-context";
 //import { getData, putData } from "../utils/storgeService";
+import Loader from "../Components/Common/Loader";
 import { addplayer } from "../actions/actions";
+import { setData } from "../services/playerservice";
 import { connect } from "react-redux";
 import axios from "axios";
 
@@ -31,18 +33,18 @@ const defaultStats = {
   },
 };
 
-function AddPlayer({ dispatch, player },props) {
+function AddPlayer({ dispatch, player }, props) {
   const context = useContext(Auth);
   const [playerForm, setPlayerForm] = useState({
     name: "",
     batting_style: "RHB",
     bowling_style: "Fast Bowler",
-    profile_img: "",
   });
- const [imgup,setImgup] = useState(); 
-  const imageupload = useRef();
+  const [loading, setloading] = useState(false);
+  const playerimgUpload = useRef();
+  //const playerImg = useRef();
   const history = useHistory();
-
+  const [imageName, setImage] = useState();
   const redirectTo = (route) => {
     history.push(route);
   };
@@ -50,62 +52,59 @@ function AddPlayer({ dispatch, player },props) {
   const handleForm = (value, key) => {
     setPlayerForm({ ...playerForm, [key]: value });
   };
-  const addingimage=()=>{
-    imageupload.current.click();
-  }
-
-  const previewFile=(event)=> {
-    const imgurl = URL.createObjectURL(event.target.files[0]);
-    setImgup(imgurl);
-    console.log(imgup);
-  }
-  
-  const createPlayer = () => {
-    let players = player;
-    players.push({ ...playerForm, id: players.length + 1, ...defaultStats });
-    console.log(players);
-    dispatch(addplayer(players));
-    redirectTo("/players");
-    console.log(playerForm);
-    console.log(player);
-   
-    const name = playerForm.name;
-    const battingStyle = playerForm.batting_style;
-    const bowlingStyle = playerForm.bowling_style;
-    //const token = context.token;
-    const image = imgup;
+  const addingimage = () => {
+    playerimgUpload.current.click();
+  };
+  const changeHandler = (e) => {
+    const data = new FormData();
+    data.append("image", e.target.files[0]);
+    setloading(true);
     axios({
-      url: "http://localhost:8000/graphql",
+      url: "http://localhost:3002/single",
       method: "post",
-      data: {
-        query: `mutation CreatePlayer($name:String!,$battingStyle:String!,$bowlingStyle:String!,$image:String!){
-          createPlayer(playerInput:{name:$name,battingStyle:$battingStyle,bowlingStyle:$bowlingStyle,run:50,wickets:6,image:$image}){
-            _id
-            name
-            battingStyle
-            bowlingStyle
-            image
-          }
-        }`,
-        variables: {
-          name: name,
-          battingStyle: battingStyle,
-          bowlingStyle: bowlingStyle,
-          image:image,
-        },
-      },
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   Authorization: 'Bearer ' + token
-      // // }
+      data: data,
     })
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
+        setImage(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.message);
+      })
+      .finally(function () {
+        setloading(false);
       });
-   };
+  };
+
+  const createPlayer = (e) => {
+    e.preventDefault();
+    let players = player;
+    players.push({ ...playerForm, id: players.length + 1, ...defaultStats });
+
+    dispatch(addplayer(players));
+
+    console.log(playerForm);
+
+    const token = context.token;
+    const data = {
+      playerData: playerForm,
+      image: imageName,
+      token: token,
+    };
+    function fetchdata() {
+      setloading(true);
+      setData(data)
+        .then((res) => {
+          console.log(res);
+          setloading(false);
+          redirectTo("/players");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    fetchdata();
+  };
 
   return (
     <React.Fragment>
@@ -113,22 +112,30 @@ function AddPlayer({ dispatch, player },props) {
         <div className="p-2 h5 text-secondary border-bottom d-flex align-items-center justify-content-between">
           <div>Add Player</div>
           <div onClick={() => redirectTo(`/players`)}>
-            <img src={close} width="30px" alt=""/>
+            <img
+              src={close}
+              width="30px"
+              alt=""
+              style={{ cursor: "pointer" }}
+            />
           </div>
         </div>
 
         <div className="text-secondary">
           <div className="d-flex justify-content-center">
             <div style={{ position: "relative" }}>
-              <img alt=""
+              <img
+                alt=""
                 src={
+                  imageName ||
                   "https://www.searchpng.com/wp-content/uploads/2019/02/Men-Profile-Image-715x657.png"
                 }
                 className="rounded-circle  mr-2"
                 style={{ width: "80px" }}
               />
-              <img alt=""
-                className="imageupload"
+              <img
+                alt=""
+                className="playerimgUpload"
                 src={plus}
                 style={{
                   position: "absolute",
@@ -137,10 +144,17 @@ function AddPlayer({ dispatch, player },props) {
                   background: "white",
                   borderRadius: "50%",
                   bottom: "0",
+                  cursor: "pointer",
                 }}
                 onClick={addingimage}
               />
-              <input type="file" ref={imageupload} style={{display:"none",position:"absolute",marginTop:"2px"}} onChange={(event) => previewFile(event)}/>
+              <input
+                type="file"
+                name="image"
+                ref={playerimgUpload}
+                onChange={changeHandler}
+                style={{ display: "none" }}
+              />
             </div>
           </div>
 
@@ -187,9 +201,10 @@ function AddPlayer({ dispatch, player },props) {
           <br />
           <div class="form-group">
             <button
+              className="playerImg"
               type="submit"
               class="btn btn-md btn-primary w-100"
-              onClick={() => createPlayer()}
+              onClick={(e) => createPlayer(e)}
             >
               Create
             </button>
@@ -197,6 +212,7 @@ function AddPlayer({ dispatch, player },props) {
         </div>
       </div>
       <Footer />
+      {loading && <Loader status={true} />}
     </React.Fragment>
   );
 }

@@ -26,10 +26,10 @@ const playersSchema = new Schema(
         image:{
             type:String
         },
-        team:{
+        user:{
             type:Schema.Types.ObjectId,
-            ref:'Team'
+            ref:'User'
         }
     }
 )
-module.exports=mongoose.model('Player',playersSchema);
+module.exports=mongoose.model('Player',playersSchema,'players');

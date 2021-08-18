@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import Footer from "../Components/Footer";
 import { useHistory } from "react-router-dom";
 import plus from "../assets/plus2.svg";
 import { addplayer } from "../actions/actions";
 //import { getData } from "../utils/storgeService";
 import { connect } from "react-redux";
-import axios from "axios";
+import Auth from "../context/auth-context";
+import {getPlayerData} from "../services/playerservice";
+import Loader from "../Components/Common/Loader";
 
 function PlayerList({ editMode = false, dispatch,player }) {
   const history = useHistory();
@@ -15,64 +17,56 @@ function PlayerList({ editMode = false, dispatch,player }) {
   };
 
   const [playersList, setPlayersList] = useState([]);
-  
+  const [loading, setloading] = useState(false);
+  const context = useContext(Auth);
    useEffect(() => {
   //   let players = getData('players');
   //   players?.length > 0 && setPlayersList([...players]);
-    axios({
-      url: "http://localhost:8000/graphql",
-      method: "post",
-      data: {
-        query: `query{
-          players{
-            name
-            _id
-            battingStyle
-            bowlingStyle
-            image
-          }
-        }`,
-      },
-    })
-      .then((res) => {
+  setloading(true);        
+  getPlayerData().then((res) => {
         console.log(res.data.data.players);
         const players = res.data.data.players;
-       return setPlayersList(players);
+        setloading(false);
+        return setPlayersList(players);
       })
       .catch((err) => {
         console.log(err);
       });
       dispatch(addplayer(playersList));
     }, []);
-     
-
+    const alloweduser = context.userId;
+    
+    const createPlayer=()=>{
+      redirectTo("/player/add")
+      }
   return (
     <React.Fragment>
-      {console.log(playersList)}
       <div className="teams-page-wrapper full-height">
         <div className="p-2 h5 text-secondary border-bottom d-flex align-items-center justify-content-between">
           <div>Players</div>
           {!editMode && (
             <div onClick={() => redirectTo(`/player/add`)}>
-              <img src={plus} width="30px" alt=""/>
+              <img src={plus} width="30px" alt="" style={{cursor:"pointer"}}/>
             </div>
           )}
         </div>
-        {playersList.length > 0 ?
+        {
+        playersList.some(pl =>pl.user._id === alloweduser) ?
          playersList.map((player, playerIndex) => {
-          console.log(player)
-              return (
-                <div
+          console.log(player.image);  
+          return (
+                <div>
+                 {alloweduser === player.user._id ?
+                  <div
                   className="border player-list-item p-2 shadow-sm mb-2"
                   key={`team-${playerIndex}`}
                   onClick={() => {
                     redirectTo(`/player/info/${player._id}`);
                   }}
-                >
+                >  
                   <div className="d-flex align-items-center">
                     <img alt=""
-                      src={player.image 
-                       ||
+                      src={player.image ||
                         "https://www.searchpng.com/wp-content/uploads/2019/02/Men-Profile-Image-715x657.png"
                       }
                       className="rounded-circle playerpic mr-2"
@@ -110,10 +104,13 @@ function PlayerList({ editMode = false, dispatch,player }) {
                       </div>
                     </div>
                   </div>
+                </div>:null}
                 </div>
-              );
+          );
             })
-          : !editMode && (
+           : <div class="col-md-12 text-center"><div class="text-secondary mb-3">There is no player added</div>
+          <button class="btn btn-md btn-primary w-30 ml-3" type="button" onClick={createPlayer}>create player</button></div>} 
+          {/* !editMode && (
               <p className=" pt-5 pb-5 text-center">
                 <button
                   type="submit"
@@ -123,9 +120,11 @@ function PlayerList({ editMode = false, dispatch,player }) {
                   Create Player
                 </button>
               </p>
-            )}
+            )}  */}
+            
       </div>
       <Footer />
+      {loading && <Loader status={true}/>}
     </React.Fragment>
   );
 }

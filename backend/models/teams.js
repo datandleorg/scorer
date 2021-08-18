@@ -7,6 +7,9 @@ const teamSchema = new Schema(
             type:String,
             required:true
         },
+        image:{
+            type:String
+        },
         score:{
             type:Number,
             required:true
@@ -27,14 +30,14 @@ const teamSchema = new Schema(
             type:Number,
             required:true
         },
-        player:{
+        players:[{
             type:Schema.Types.ObjectId,
             ref:'Player'
-        },
-        match:{
+        }],
+        user:{
             type:Schema.Types.ObjectId,
-            ref:'Match'
+            ref:'User'
         }
     }
 )
-module.exports =  mongoose.model('Team',teamSchema)
+module.exports =  mongoose.model('Team',teamSchema,'teams')

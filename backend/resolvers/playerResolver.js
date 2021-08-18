@@ -27,14 +27,18 @@ module.exports = {
                 console.log(err)
             }
     },
-    createPlayer:async (args)=>{
+    createPlayer:async (args,req)=>{
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated!');
+          }
             const player = new Player({
                 name:args.playerInput.name,
                 battingStyle:args.playerInput.battingStyle,
                 bowlingStyle:args.playerInput.bowlingStyle,
                 run:args.playerInput.run,
                 wickets:args.playerInput.wickets,
-                image:args.playerInput.image
+                image:args.playerInput.image,
+                user:req.userId
             })
             try{
                 const result = await player.save();
@@ -49,8 +53,8 @@ module.exports = {
     },
     updatePlayer:async (args)=>{
         try{
-        const playerUpdate = await Player.findById(args.playerId);
-        await Player.updateOne({_id:args.playerId},{$inc:{run:20,wickets:10}});
+            const playerUpdate = await Player.findById(args.playerId);
+         await Player.updateOne({_id:args.playerId},{name:"ms dhoni"},{$inc:{run:20,wickets:10}});
                 return({
                     ...playerUpdate._doc,
                     _id:playerUpdate.id
