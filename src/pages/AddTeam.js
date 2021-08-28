@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import axios from "axios";
 import { CreateTeam } from "../services/teamservice";
 import Loader from "../Components/Common/Loader";
+import { baseURL, FILE_PORT } from "../constants/appConstants";
 
 function AddTeam({ dispatch, team }) {
   const [teamForm, setTeamForm] = useState({
@@ -37,7 +38,7 @@ function AddTeam({ dispatch, team }) {
     data.append("image", e.target.files[0]);
     setloading(true);
     axios({
-      url: "http://localhost:3002/single",
+      url: `${baseURL}:${FILE_PORT}/single`,
       method: "post",
       data: data,
     })

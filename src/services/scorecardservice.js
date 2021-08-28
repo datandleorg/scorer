@@ -1,11 +1,12 @@
 import axios from "axios";
+import { API_PORT, baseURL } from "../constants/appConstants";
 
 export const createScorecard = (scorecard) => {
   const matchStatus = scorecard.matchStatus;
   const innings1 = scorecard.innings1;
   const innings2 = scorecard.innings2;
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation CreateScorecard($matchStatus:String,$innings1:InningsInput,$innings2:InningsInput){
@@ -123,7 +124,7 @@ export const createScorecard = (scorecard) => {
 };
 export const getScorecard = () => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `query{
@@ -241,7 +242,7 @@ export const updateScorecard = (scoreCardId,scoreCard) => {
   const innings1 = scoreCard.innings1;
   const innings2 = scoreCard.innings2;
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation UpdateScorecard($scorecardId:ID,$matchStatus:String,$innings1:InningsInput,$innings2:InningsInput){ 
@@ -372,7 +373,7 @@ export const updates = (scoreCardId, scoreCard, playerId, data) => {
   const overs = data.overs;
   const bowl_runs = data.runs;
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation Updates($scorecardId:ID,$innings1:InningsInput,$innings2:InningsInput,$playerId:ID!,$name:String,$run:Int,$balls:Int,$fours:Int,$sixes:Int,$overs:Int,$bowl_runs:Int){ 

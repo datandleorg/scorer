@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_PORT, baseURL } from "../constants/appConstants";
 
 export const setData = async (data) => {
   const name = data.playerData.name;
@@ -8,7 +9,7 @@ export const setData = async (data) => {
   const token = data.token;
 
   const res = await axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation CreatePlayer($name:String!,$battingStyle:String!,$bowlingStyle:String!,$image:String!){
@@ -41,7 +42,7 @@ export const setData = async (data) => {
 
 export const getPlayerData = () => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `query{
@@ -70,7 +71,7 @@ export const getPlayerData = () => {
 
 export const getPlayerById = async (playerId) => {
   const res = await axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `query GetPlayerById($playerId:ID!){
@@ -108,7 +109,7 @@ export const updatePlayer = async (playerId, data) => {
   const bowl_runs = data.runs;
   const wickets = data.wickets;
   const res = await axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation UpdatePlayer($playerId:ID!,$name:String,$run:Int,$balls:Int,$fours:Int,$sixes:Int,$overs:Int,$bowl_runs:Int,$wickets:Int){
@@ -187,7 +188,7 @@ export const updateScoreOfPlayers = async (
   const bowlerbowl_runs = bowlerData.bowl_runs;
   const bowlerwickets = bowlerData.wickets;
   const res = await axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation updateScoreOfPlayers ($strikerId:ID!,$strikername:String,$strikerrun:Int,$strikerballs:Int,$strikerfours:Int,$strikersixes:Int,$strikerovers:Int,$strikerbowl_runs:Int,$strikerwickets:Int,
