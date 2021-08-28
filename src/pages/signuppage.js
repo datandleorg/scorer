@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Auth from "../context/auth-context";
 import { signup } from "../services/loginservices";
+import Loader from "../Components/Common/Loader";
 
 const Signuppage = (props) => {
   const context = useContext(Auth);
@@ -14,11 +15,14 @@ const Signuppage = (props) => {
     setLogin({ ...Login, [key]: value });
     console.log(Login);
   };
+  const [isLoading,setLoading] = useState;
   const signupHandler = () => {
     const email = Login.email;
     const password = Login.password;
+    setLoading(true);
     signup(email, password)
       .then((res) => {
+        setLoading(false);
         console.log(res);
       })
       .catch((err) => {
@@ -40,6 +44,7 @@ const Signuppage = (props) => {
           <label>E-mail</label>
           <input
             class="form-control"
+            type="email"
             name="email"
             value={Login.email}
             onChange={(e) => handleForm(e.target.value, e.target.name)}
@@ -49,6 +54,7 @@ const Signuppage = (props) => {
           <label>Password</label>
           <input
             class="form-control"
+            type="password"
             name="password"
             value={Login.password}
             onChange={(e) => handleForm(e.target.value, e.target.name)}
@@ -64,6 +70,7 @@ const Signuppage = (props) => {
           </button>
         </div>
       </form>
+      {isLoading && <Loader status={true}/>}
     </div>
   );
 };

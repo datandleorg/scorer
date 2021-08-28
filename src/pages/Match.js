@@ -189,6 +189,7 @@ function Match({ matchData, player, team }) {
       scorecardCopy["scorecard"]?.[otherInning]?.non_striker?._id;
     scorecardCopy["scorecard"][otherInning].bowler_1 =
       scorecardCopy["scorecard"]?.[otherInning]?.bowler_1?._id;
+      
     let bowler = scorecardCopy["scorecard"]?.[currentInning]?.bowler_1?._id;
     let swap = scorecardCopy["scorecard"]?.[currentInning]?.striker?._id;
     scorecardCopy["scorecard"][currentInning].striker =
@@ -210,14 +211,14 @@ function Match({ matchData, player, team }) {
 
   const retireBatsman = () => {
     setModalStatus({ status: true, type: "retire" });
-    createScorecard(initialScorecard)
-      .then((res) => {
-        console.log(res.data.data.createScorecard);
-        //setScorecard(res.data.data.createScorecard);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // createScorecard(initialScorecard)
+    //   .then((res) => {
+    //     console.log(res.data.data.createScorecard);
+    //     //setScorecard(res.data.data.createScorecard);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   const handleEvent = ({ ball, striker }) => {
@@ -240,6 +241,12 @@ function Match({ matchData, player, team }) {
     const scorecardCopy = JSON.parse(JSON.stringify(scorecard));
 
     if (type === "init") {
+      
+      scorecardCopy["scorecard"][currentInning]["striker"] = currentPlayers?.striker?.value;
+      scorecardCopy["scorecard"][currentInning]["non_striker"] = currentPlayers?.non_striker?.value;
+      scorecardCopy["scorecard"][currentInning]["bowler_1"] = currentPlayers?.bowler_1?.value;
+      
+      
       //     if (
       //       !currentPlayers.striker?.value ||
       //       !currentPlayers.non_striker?.value ||
@@ -262,6 +269,9 @@ function Match({ matchData, player, team }) {
         scorecardCopy["scorecard"][currentInning].wickets + 1;
       scorecardCopy["scorecard"][currentInning]["bowler_1"].wickets =
         scorecardCopy["scorecard"][currentInning]["bowler_1"].wickets + 1;
+        scorecardCopy["scorecard"][currentInning]["striker"] = currentPlayers?.new_batsmen?.value;
+        scorecardCopy["scorecard"][currentInning]["non_striker"] = scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
+        scorecardCopy["scorecard"][currentInning]["bowler_1"] = scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"]?._id;
 
       setModalStatus({ status: false, type: "" });
     }
@@ -294,10 +304,11 @@ function Match({ matchData, player, team }) {
           currentover + 1;
         scorecardCopy["scorecard"][currentInning].bowler_1.overs =
           scorecardCopy["scorecard"][currentInning].bowler_1.overs + 1;
+        scorecardCopy["scorecard"][currentInning]["striker"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?._id;
+        scorecardCopy["scorecard"][currentInning]["non_striker"] = scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
+        scorecardCopy["scorecard"][currentInning]["bowler_1"] = currentPlayers?.bowler_1?.value;
       } else {
-        scorecardCopy["scorecard"][currentInning]["current_ball"] =
-          currentball + 1;
-
+        scorecardCopy["scorecard"][currentInning]["current_ball"] = currentball + 1;
         //     matchdata = {
         //       ...matchdata,
         //       data: {
@@ -306,25 +317,18 @@ function Match({ matchData, player, team }) {
         //       },
         //       update: matchdata.update + 1,
         //     };
-      }
 
       let run = scorecardCopy?.["scorecard"]?.[currentInning]?.["runs"];
-      let playerRun =
-        scorecardCopy?.["scorecard"]?.[currentInning]?.["striker"]?.["run"];
       let currentBall =
         scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["balls"];
 
       if (ball === "Run") {
         scorecardCopy["scorecard"][currentInning]["runs"] = run + ballObj.value;
-        scorecardCopy["scorecard"][currentInning]["striker"]["run"] =
-          playerRun + ballObj.value;
-        scorecardCopy["scorecard"][currentInning]["striker"]["balls"] =
-          currentBall + 1;
+        scorecardCopy["scorecard"][currentInning]["striker"]["run"] = scorecardCopy?.["scorecard"]?.[currentInning]?.["striker"]?.["run"] + ballObj.value;
+        scorecardCopy["scorecard"][currentInning]["striker"]["balls"] = currentBall + 1;
         scorecardCopy["scorecard"][currentInning]["bowler_1"].bowl_runs =
-          scorecardCopy["scorecard"][currentInning]["bowler_1"].bowl_runs +
-          ballObj.value;
+          scorecardCopy["scorecard"][currentInning]["bowler_1"].bowl_runs + ballObj.value;
       }
-
       if (ballObj.value === 1 || ballObj.value === 3 || ballObj.value === 5) {
         let swap = scorecardCopy["scorecard"][currentInning].striker;
         scorecardCopy["scorecard"][currentInning].striker =
@@ -371,82 +375,45 @@ function Match({ matchData, player, team }) {
           redirectTo("/winner");
         }
       }
-
-      if (currentball === 5) {
-        let update = JSON.parse(JSON.stringify(scorecardCopy.scorecard));
-        let Id = scorecardCopy.scorecard._id;
-        update[otherInning].striker = update[otherInning]?.striker?._id;
-        update[otherInning].non_striker = update[otherInning]?.non_striker?._id;
-        update[otherInning].bowler_1 = update[otherInning]?.bowler_1?._id;
-  
-        update[currentInning]["striker"] = update[currentInning]["striker"]._id;
-        update[currentInning]["non_striker"] =
-          update[currentInning]["non_striker"]._id;
-        update[currentInning]["bowler_1"] = currentPlayers.bowler_1.value;
-  
-      updateScorecard(Id, update)
-        .then((res) => {
-          console.log(res.data.data.updateScorecard);
-          setScorecard({ scorecard: res.data.data.updateScorecard });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      }
-      setModalStatus({ status: false, type: "" });
+      console.log(scorecardCopy["scorecard"][currentInning].striker);
+      scorecardCopy["scorecard"][currentInning]["striker"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?._id;
+      scorecardCopy["scorecard"][currentInning]["non_striker"] = scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
+      scorecardCopy["scorecard"][currentInning]["bowler_1"] = scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"]?._id;
     }
+  setModalStatus({ status: false, type: "" });
+   }
+   console.log(scorecardCopy["scorecard"][currentInning].striker);
+
 
     if (type === "retire") {
-      let update = JSON.parse(JSON.stringify(scorecardCopy.scorecard));
-      let Id = scorecardCopy.scorecard._id;
-      update[otherInning].striker = update[otherInning]?.striker?._id;
-      update[otherInning].non_striker = update[otherInning]?.non_striker?._id;
-      update[otherInning].bowler_1 = update[otherInning]?.bowler_1?._id;
-
-      update[currentInning]["striker"] = currentPlayers.new_batsmen.value;
-      update[currentInning]["non_striker"] =
-        update[currentInning]["non_striker"]._id;
-      update[currentInning]["bowler_1"] = update[currentInning]["bowler_1"]._id;
-
-      updateScorecard(Id, update)
-        .then((res) => {
-          console.log(res.data.data.updateScorecard);
-          setScorecard({ scorecard: res.data.data.updateScorecard });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      scorecardCopy["scorecard"][currentInning]["striker"] = currentPlayers.new_batsmen.value;
+      scorecardCopy["scorecard"][currentInning]["non_striker"] = scorecardCopy["scorecard"][currentInning]["non_striker"]._id;
+      scorecardCopy["scorecard"][currentInning]["bowler_1"] = scorecardCopy["scorecard"][currentInning]["bowler_1"]._id;
       setModalStatus({ status: false, type: "" });
-      if (scorecardCopy?.scorecard?.matchStatus === "end") {
-        redirectTo("/");
-      }
     }
-    let update = JSON.parse(JSON.stringify(scorecardCopy.scorecard));
+    console.log(scorecardCopy.scorecard);
+    let update = scorecardCopy.scorecard;
+    let Id = scorecardCopy.scorecard._id;
     update[otherInning].striker = update[otherInning]?.striker?._id;
     update[otherInning].non_striker = update[otherInning]?.non_striker?._id;
     update[otherInning].bowler_1 = update[otherInning]?.bowler_1?._id;
 
-    update[currentInning].striker = update[currentInning].striker?._id;
-    update[currentInning].non_striker = update[currentInning].non_striker?._id;
-    update[currentInning].bowler_1 = update[currentInning].bowler_1?._id;
+    update[currentInning].striker = update[currentInning].striker;
+    update[currentInning].non_striker = update[currentInning].non_striker;
+    update[currentInning].bowler_1 = update[currentInning].bowler_1;
 
-    let strikerUpdate = JSON.parse(
-      JSON.stringify(scorecardCopy.scorecard[currentInning]["striker"])
-    );
-    let nonStrikerUpdate = JSON.parse(
-      JSON.stringify(scorecardCopy.scorecard[currentInning]["non_striker"])
-    );
-    let bowlerUpdate = JSON.parse(
-      JSON.stringify(scorecardCopy.scorecard[currentInning]["bowler_1"])
-    );
-
-    updateScoreOfPlayers(strikerUpdate, nonStrikerUpdate, bowlerUpdate, update)
+    updateScorecard(Id,update)
       .then((res) => {
-        console.log(res.data.data.updatedScorecard);
-        setScorecard({ scorecard: res.data.data.updatedScorecard });
+        console.log(res.data.data.updateScorecard);
+        setScorecard({ scorecard: res.data.data.updateScorecard });
       })
       .catch((err) => console.log(err));
-  };
+      
+      if (scorecardCopy?.scorecard?.matchStatus === "end") {
+        redirectTo("/");
+      }
+    };
+
   console.log(scorecard);
   let totalBalls = MatchData?.overs * 6;
   return (
@@ -619,16 +586,16 @@ function Match({ matchData, player, team }) {
                 <div className="flex-1">{/*bowler_1?.sixes || "-"*/}-</div>
                 <div className="flex-1">{/*bowler_1?.srate || "-"*/}-</div>
               </div>
-              <div className="d-flex small justify-content-between text-center pt-1">
+              {/*<div className="d-flex small justify-content-between text-center pt-1">
                 <div className="flex-3 text-left">
-                  {/*bowler_2?.name || "-"*/} kholi
+                  bowler_2?.name || "-" kholi
                 </div>
-                <div className="flex-1">{/*bowler_2?.runs || "-"*/}3</div>
-                <div className="flex-1">{/*bowler_2?.balls || "-"*/}25</div>
-                <div className="flex-1">{/*bowler_2?.fours || "-"*/}2</div>
-                <div className="flex-1">{/*bowler_2?.sixes || "-"*/}-</div>
-                <div className="flex-1">{/*bowler_2?.srate || "-"*/}-</div>
-              </div>
+                <div className="flex-1">bowler_2?.runs || "-"3</div>
+                <div className="flex-1">bowler_2?.balls || "-"25</div>
+                <div className="flex-1">bowler_2?.fours || "-"2</div>
+                <div className="flex-1">bowler_2?.sixes || "-"-</div>
+                <div className="flex-1">bowler_2?.srate || "-"-</div>
+              </div>*/}
             </div>
             <div className="p-1 mt-2">
               <div className="d-flex smaller align-items-center">

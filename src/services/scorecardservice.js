@@ -299,6 +299,7 @@ export const updateScorecard = (scoreCardId,scoreCard) => {
               }
               innings2{
                 striker{
+                  _id
                   name
                   run
                   balls
@@ -310,6 +311,7 @@ export const updateScorecard = (scoreCardId,scoreCard) => {
                   bowl_runs
                 }
                 non_striker{
+                  _id
                   name
                   run
                   fours

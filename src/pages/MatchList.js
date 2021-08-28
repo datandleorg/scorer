@@ -86,7 +86,7 @@ function MatchList({ editMode = false, match }) {
                           <div className="mr-3">
                             Players Per Side:{" "}
                             <span className="font-weight-bold">
-                              7
+                              0
                               {
                                 //matchvalue.matchData.players_per_team
                               }

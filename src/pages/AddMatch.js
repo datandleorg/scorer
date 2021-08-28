@@ -12,6 +12,7 @@ import Auth from "../context/auth-context";
 import { CreateMatch } from "../services/matchservice";
 import { getTeam } from "../services/teamservice";
 import Loader from "../Components/Common/Loader";
+import { createScorecard } from "../services/scorecardservice";
 
 function AddMatch({ dispatch, team }) {
   const [match, setMatchForm] = useState({
@@ -32,7 +33,26 @@ function AddMatch({ dispatch, team }) {
   const redirectTo = (route) => {
     history.push(route);
   };
-
+  let scorecard = {
+    innings_1: {
+      runs: 0,
+      wkts: 0,
+      current_over: 0, 
+      current_ball: 0,
+      target: 0,
+      bowler_2: "",
+      end: false,
+    },
+    innings_2: {
+      runs: 0,
+      wkts: 0,
+      current_over: 0,
+      current_ball: 0,
+      target: 0,
+      bowler_2: "",
+      end: false,
+    },
+  }
   const handleForm = (value, key) => {
     setMatchForm({ ...match, [key]: value });
   };
@@ -75,36 +95,7 @@ function AddMatch({ dispatch, team }) {
       batting_first: match.batting_first,
       overs: match.overs,
       date: date.format("DD/MM/YYYY"),
-      teams: [match.team_1, match.team_2],
-      scorecard: {
-        innings_1: {
-          runs: 0,
-          wkts: 0,
-          current_over: 0,
-          current_ball: 0,
-          balls: [],
-          target: "",
-          striker: "",
-          non_striker: "",
-          bowler_1: "",
-          bowler_2: "",
-          end: false,
-          batting: {},
-        },
-        innings_2: {
-          runs: 0,
-          wkts: 0,
-          current_over: 0,
-          current_ball: 0,
-          balls: [],
-          target: "",
-          striker: "",
-          non_striker: "",
-          bowler_1: "",
-          bowler_2: "",
-          end: false,
-        },
-      },
+      teams: [match.team_1, match.team_2]
     };
 
     let matches = [];
@@ -129,7 +120,12 @@ function AddMatch({ dispatch, team }) {
       .catch((err) => {
         console.log(err);
       });
-  };
+
+      createScorecard(scorecard)
+      .then(res=>{console.log(res.data.data.createScorecard)})
+      .catch(err=>{console.log(err)});
+
+    };
   //putData('matches', matches);
   //match = matches;
   // let match = matches.map((m,index)=>{

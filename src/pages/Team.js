@@ -7,6 +7,7 @@ import Auth from "../context/auth-context";
 import { connect } from "react-redux";
 import { getPlayerData } from "../services/playerservice";
 import { getTeamById, AddPlayerToTeam } from "../services/teamservice";
+import Loader from "../Components/Common/Loader";
 
 function Team({ team }) {
   const match = useRouteMatch();
@@ -19,6 +20,7 @@ function Team({ team }) {
   const [players, setPlayers] = useState([]);
   const [currplayer, setcurrplayer] = useState({});
   const [selectedPlayer, setSelectedPlayer] = useState({});
+  const [isLoading,setLoading] = useState(false);
   // const [updateData, setUpdateData] = useState(0)
   // useEffect(() => {
   //   let team = getTeamById(+teamId);
@@ -64,13 +66,15 @@ function Team({ team }) {
 
   const addPlayerToTeam = () => {
     const playerId = selectedPlayer.id;
-
+    setLoading(true);
     AddPlayerToTeam(playerId, teamId)
       .then((res) => {
+        setLoading(false);
         console.log(res.data.data.addPlayerToTeam);
         return setTeamData(res.data.data.addPlayerToTeam);
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
       });
     setSelectedPlayer({});
@@ -101,16 +105,16 @@ function Team({ team }) {
         <div className="ml-2">
           <div className="d-flex small text-muted justify-content-center pt-2 team-stats align-items-center text-secondary border-bottom pb-2">
             <div className="mr-3">
-              Matches: <span className="font-weight-bold">{3}</span>
+              Matches: <span className="font-weight-bold">{teamData.matches}</span>
             </div>
             <div className="mr-3">
-              Won: <span className="font-weight-bold text-success">{1}</span>
+              Won: <span className="font-weight-bold text-success">{teamData.won}</span>
             </div>
             <div className="mr-3">
-              Loss: <span className="font-weight-bold text-danger">{1}</span>
+              Loss: <span className="font-weight-bold text-danger">{teamData.loss}</span>
             </div>
             <div>
-              Tied: <span className="font-weight-bold text-info">{1}</span>
+              Tied: <span className="font-weight-bold text-info">{teamData.tie}</span>
             </div>
           </div>
         </div>
@@ -198,6 +202,7 @@ function Team({ team }) {
               })}
           </div>
         </div>
+      {isLoading && <Loader status={true}/>}
       </div>
       <Footer />
     </React.Fragment>
