@@ -1,11 +1,12 @@
 import axios from "axios";
+import { API_PORT, baseURL } from "../constants/appConstants";
 
 export const CreateTeam = (data) => {
   const name = data.name;
   const image = data.image;
   const token = data.token;
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation CreateTeam($name:String!,$image:String){
@@ -40,7 +41,7 @@ export const CreateTeam = (data) => {
 };
 export const getTeam = () => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `query{
@@ -71,7 +72,7 @@ export const getTeam = () => {
 };
 export const getTeamById = (teamId) => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `query GetTeamById($teamId:ID!){
@@ -102,7 +103,7 @@ export const getTeamById = (teamId) => {
 };
 export const AddPlayerToTeam = (playerId, teamId) => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation AddPlayerToTeam($playerId:ID!,$teamId:ID!){
@@ -135,7 +136,7 @@ export const AddPlayerToTeam = (playerId, teamId) => {
 };
 export const DeletePlayerFromTeam = async (playerId, teamId) => {
   const res = await axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutationDeletePlayerFromTeam($teamId:ID!,$playerId:ID!){

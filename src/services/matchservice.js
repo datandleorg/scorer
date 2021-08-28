@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_PORT, baseURL } from "../constants/appConstants";
 
 export const CreateMatch = (matchData) => {
   const overs = matchData.overs;
@@ -9,7 +10,7 @@ export const CreateMatch = (matchData) => {
   const token = matchData.token;
 
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation CreateMatch($overs:Int!,$team1:ID!,$team2:ID!,$tossWonBy:String!,$battingFirst:String!){
@@ -46,7 +47,7 @@ export const CreateMatch = (matchData) => {
 
 export const getMatch = () => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `query{
@@ -74,7 +75,7 @@ export const getMatch = () => {
 };
 export const GetMatchById = (matchId) => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `query GetMatchById($matchId:ID!){

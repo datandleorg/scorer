@@ -1,5 +1,6 @@
 const express = require('express');
-const multer = require("multer")
+const multer = require("multer");
+const { baseURL, FILE_PORT } = require('../src/constants/appConstants');
 
 const app = express();
 
@@ -20,7 +21,7 @@ const storage = multer.diskStorage({
 app.post('/single',upload.single("image"),(req,res)=>{
   console.log(req.file.filename);
   const imageName = req.file.filename;
-  res.send(`http://localhost:3002/${imageName}`);
+  res.send(`${baseURL}:${FILE_PORT}/${imageName}`);
 })
 
 app.listen(3002);

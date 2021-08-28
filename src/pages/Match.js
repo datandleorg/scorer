@@ -112,14 +112,14 @@ function Match({ matchData, player, team }) {
   // }, [matchData.update]);
 
   useEffect(() => {
-    getScorecard()
-      .then((res) => {
-        console.log(res.data.data.scorecard);
-        setScorecard({ scorecard: res.data.data.scorecard });
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // getScorecard()
+    //   .then((res) => {
+    //     console.log(res.data.data.scorecard);
+    //     setScorecard({ scorecard: res.data.data.scorecard });
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }, []);
   // const getPlayerFromMatch = (id, teamId) => {
   //   let currTeam = matchdata.matchData[`team_${teamId}`];

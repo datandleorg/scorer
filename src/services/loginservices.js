@@ -1,8 +1,9 @@
 import axios from "axios";
+import { API_PORT, baseURL } from "../constants/appConstants";
 
 export const login = (email, password) => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     headers: {
       "Content-Type": "application/json",
@@ -26,7 +27,7 @@ export const login = (email, password) => {
 
 export const signup = (email, password) => {
   const res = axios({
-    url: "http://localhost:8000/graphql",
+    url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
       query: `mutation CreateUser($email:String!,$password:String!){
