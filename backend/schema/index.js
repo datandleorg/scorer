@@ -9,6 +9,18 @@ type Player {
     battingStyle:String!
     bowlingStyle:String!
     image:String
+    balls:Int
+    overs:Int
+    fours:Int
+    sixes:Int
+    thirty:Int
+    fifty:Int
+    avg:Int
+    matches:Int
+    st_rate:Float
+    bowl_avg:Int
+    bowl_runs:Int
+    bowl_rate:Float
     user:User
 }
 type Team {
@@ -25,20 +37,21 @@ type Team {
 }
 type Innings{
     _id:ID
-    striker:String
-    nonstriker:String
+    striker:Player
+    non_striker:Player
     runs:Int
     wickets:Int
-    currentover:Int
-    currentball:Int
-    bowler1:String
-    bowler2:String
-    balls:Int
+    current_over:Int
+    current_ball:Int
+    bowler_1:Player
+    bowler_2:String
+    balls:[Balls]
     target:Int
     end:Boolean
 }
 type Scorecard{
     _id:ID
+    matchStatus:String
     innings1:Innings
     innings2:Innings
 }
@@ -62,7 +75,14 @@ type Auth{
     token:String
     tokenExpiration:Int
 }
-
+type Balls{
+    type:String
+    value:Int
+}
+input BallsInput{
+    type:String
+    value:Int
+}
 input UserInput{
     email:String!
     password:String!
@@ -74,17 +94,29 @@ input PlayerInput{
     bowlingStyle:String!
     run:Int
     wickets:Int
+    balls:Int
+    overs:Int
+    fours:Int
+    sixes:Int
+    thirty:Int
+    fifty:Int
+    avg:Int
+    matches:Int
+    st_rate:Float
+    bowl_avg:Int
+    bowl_runs:Int
+    bowl_rate:Float
 }
 input InningsInput{
-    striker:String
-    nonstriker:String
+    striker:ID
+    non_striker:ID
     runs:Int
     wickets:Int
-    currentover:Int
-    currentball:Int
-    bowler1:String
-    bowler2:String
-    balls:Int
+    current_over:Int
+    current_ball:Int
+    bowler_1:ID
+    bowler_2:String
+    balls:[BallsInput]
     target:Int
     end:Boolean
 }
@@ -121,9 +153,9 @@ type RootMutation{
     createMatch(matchInput:MatchInput):Match
     createUser(userInput:UserInput):User
     createInnings(inningsInput:InningsInput):Innings
-    createScorecard(innings1:InningsInput,innings2:InningsInput):Scorecard
-    updateScorecard(scorecardId:ID,innings1:InningsInput,innings2:InningsInput):Scorecard
-    updatePlayer(playerId:ID!):Player
+    createScorecard(matchStatus:String,innings1:InningsInput,innings2:InningsInput):Scorecard
+    updateScorecard(scorecardId:ID,matchStatus:String,innings1:InningsInput,innings2:InningsInput):Scorecard
+    updatePlayer(playerId:ID!,name:String,run:Int,balls:Int,fours:Int,sixes:Int,overs:Int,bowl_runs:Int,wickets:Int):Player
     updateTeam(teamId:ID!):Team
     addPlayerToTeam(teamId:ID!,playerId:ID!):Team
     deletePlayer(playerId:ID!):Player

@@ -1,13 +1,23 @@
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
+const ballsSchema = new Schema({
+  type:{
+    type: String,
+  },
+  value:{
+    type: Number
+  }
+});
 
 const inningSchema = new Schema({
   striker: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref:'Player'
   },
-  nonstriker: {
-    type: String,
+  non_striker: {
+    type: Schema.Types.ObjectId,
+    ref:'Player'
   },
   runs: {
     type: Number,
@@ -15,21 +25,23 @@ const inningSchema = new Schema({
   wickets: {
     type: Number,
   },
-  bowler1: {
+  bowler_1: {
+    type: Schema.Types.ObjectId,
+    ref:'Player'
+  },
+  bowler_2: {
     type: String,
   },
-  bowler2: {
-    type: String,
-  },
-  currentover: {
+  current_over: {
     type: Number,
   },
-  currentball: {
+  current_ball: {
     type: Number,
   },
-  balls: {
-    type: Number,
-  },
+  balls: [{
+    type:ballsSchema,
+  }
+  ],
   target: {
     type: Number,
   },
@@ -39,6 +51,9 @@ const inningSchema = new Schema({
 });
 const scorecardSchema = new Schema(
   {
+    matchStatus:{
+      type:String,
+    },
     innings1: {
       type: inningSchema,
     },
@@ -48,5 +63,7 @@ const scorecardSchema = new Schema(
   },
   { strict: false }
 );
+
+module.exports = mongoose.model("Balls",ballsSchema);
 module.exports = mongoose.model("Innings", inningSchema);
 module.exports = mongoose.model("Scorecard", scorecardSchema);

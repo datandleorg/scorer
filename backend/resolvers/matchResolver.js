@@ -34,26 +34,6 @@ module.exports = {
     });
     try {
       const matches = await match.save();
-
-      const scorecard = {
-        scorecard: {
-          innings1: {},
-          innings2: {},
-          result: {},
-        },
-      };
-      const matchUpdate = await Match.findByIdAndUpdate(
-        matches._id,
-        scorecard,
-        {
-          returnNewDocument: true,
-          new: true,
-          strict: false,
-        }
-      );
-      matchUpdated.set("scorecard", scorecard);
-
-      await matchUpdate.save();
       const updatedmatch = Match.findById(matches._id)
         .populate({
           path: "team1",
@@ -65,7 +45,6 @@ module.exports = {
           model: "Team",
           populate: { path: "players", model: "Player" },
         })
-        .populate("scorecard")
         .exec();
       return updatedmatch;
     } catch (err) {

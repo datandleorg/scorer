@@ -51,7 +51,7 @@ function Player({ player }) {
           <div className="text-secondary">
             <div className="d-flex justify-content-between small mb-1">
               <div>Matches</div>
-              <div>0{/*playerData[0].stats.matches*/}</div>
+              <div>{playerData.matches}</div>
             </div>
           </div>
         </div>
@@ -64,11 +64,11 @@ function Player({ player }) {
             </div>
             <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Avg</div>
-              <div>{/*playerData[0].stats.avg*/}0</div>
+              <div>{playerData.avg}0</div>
             </div>
             <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>SRate</div>
-              <div>{/*playerData[0].stats.srate*/} 0%</div>
+              <div>{playerData.st_rate} %</div>
             </div>
           </div>
         </div>
@@ -81,15 +81,15 @@ function Player({ player }) {
             </div>
             <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Bowl Avg</div>
-              <div>{/*playerData[0].stats.runs*/}0</div>
+              <div>{playerData.bowl_avg}</div>
             </div>
             <div className="d-flex justify-content-between  align-items-center small mb-1">
               <div>Bowl SRate</div>
-              <div>{/*playerData[0].stats.avg*/}0</div>
+              <div>{playerData.bowl_rate}</div>
             </div>
             <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Overs</div>
-              <div>{/*playerData[0].stats.srate*/} 0%</div>
+              <div>{playerData.overs}</div>
             </div>
           </div>
         </div>
@@ -98,15 +98,15 @@ function Player({ player }) {
           <div className="text-secondary">
             <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Catches</div>
-              <div className="h3 text-danger">{/*playerData[0].stats.matches*/}0</div>
+              <div className="h3 text-danger">{playerData.matches}</div>
             </div>
             <div className="d-flex justify-content-between align-items-center small mb-1">
               <div>Run Outs</div>
-              <div>{/*playerData[0].stats.runs*/}0</div>
+              <div>{playerData.runs}</div>
             </div>
             <div className="d-flex justify-content-between  align-items-center small mb-1">
               <div>Stumpings</div>
-              <div>{/*playerData[0].stats.avg*/}0</div>
+              <div>{playerData.avg}</div>
             </div>
           </div>
         </div>

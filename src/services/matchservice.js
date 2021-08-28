@@ -89,6 +89,13 @@ export const GetMatchById = (matchId) => {
                        _id
                        name
                        run
+                       wickets
+                       fours
+                       sixes
+                       balls
+                       overs
+                       bowl_runs
+                       st_rate
                      }
                     }
                     team2{
@@ -99,6 +106,13 @@ export const GetMatchById = (matchId) => {
                       _id
                       name
                       run
+                      fours
+                      wickets
+                       sixes
+                       balls
+                       overs
+                       bowl_runs
+                       st_rate
                     }
                    }
                    user{

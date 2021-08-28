@@ -22,7 +22,6 @@ function AddMatch({ dispatch, team }) {
     overs: 0,
   });
   const context = useContext(Auth);
-  //const [teamsOptions, setTeamsOptions] = useState([]);
   const [teams, setTeams] = useState([]);
   const [loading, setloading] = useState(false);
   const history = useHistory();

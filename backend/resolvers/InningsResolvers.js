@@ -17,20 +17,21 @@ module.exports = {
   createInnings: async (args) => {
     const innings = new Innings({
       striker: args.inningsInput.striker,
-      nonstriker: args.inningsInput.nonstriker,
+      non_striker: args.inningsInput.nonstriker,
       runs: args.inningsInput.runs,
       wickets: args.inningsInput.wickets,
-      currentover: args.inningsInput.currentover,
-      currentball: args.inningsInput.currentball,
-      bowler1: args.inningsInput.bowler1,
-      bowler2: args.inningsInput.bowler2,
+      current_over: args.inningsInput.currentover,
+      current_ball: args.inningsInput.currentball,
+      bowler_1: args.inningsInput.bowler1,
+      bowler_2: args.inningsInput.bowler2,
       balls: args.inningsInput.balls,
       target: args.inningsInput.target,
       end: args.inningsInput.end,
     });
     console.log(innings);
     try {
-      const result = await innings.save();
+      const result = await innings.populate({path:"striker",model:"Player"})
+      .populate({path:"non_striker",model:"Player"}).exec();
       console.log(result._doc);
       return {
         ...result._doc,

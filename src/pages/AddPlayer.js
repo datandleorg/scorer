@@ -42,7 +42,6 @@ function AddPlayer({ dispatch, player }, props) {
   });
   const [loading, setloading] = useState(false);
   const playerimgUpload = useRef();
-  //const playerImg = useRef();
   const history = useHistory();
   const [imageName, setImage] = useState();
   const redirectTo = (route) => {

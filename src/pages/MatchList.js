@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 import plus from "../assets/plus2.svg";
 //import { getData } from "../utils/storgeService";
 import { connect } from "react-redux";
-// import axios from "axios";
 import Loader from "../Components/Common/Loader";
 import { getMatch } from "../services/matchservice";
 import Auth from "../context/auth-context";

@@ -38,6 +38,18 @@ module.exports = {
                 run:args.playerInput.run,
                 wickets:args.playerInput.wickets,
                 image:args.playerInput.image,
+                overs:args.playerInput.overs,
+                fours:args.playerInput.fours,
+                sixes:args.playerInput.sixes,
+                thirty:args.playerInput.thirty,
+                fifty:args.playerInput.fifty,
+                balls:args.playerInput.balls,
+                st_rate:args.playerInput.st_rate,
+                matches:args.playerInput.matches,
+                bowl_run:args.playerInput.bowl_run,
+                bowl_rate:args.playerInput.bowl_rate,
+                avg:args.playerInput.avg,
+                bowl_avg:args.playerInput.bowl_avg,
                 user:req.userId
             })
             try{
@@ -54,7 +66,7 @@ module.exports = {
     updatePlayer:async (args)=>{
         try{
             const playerUpdate = await Player.findById(args.playerId);
-         await Player.updateOne({_id:args.playerId},{name:"ms dhoni"},{$inc:{run:20,wickets:10}});
+         await Player.updateOne({_id:args.playerId},{name:args.name,run:args.run,balls:args.balls,fours:args.fours,sixes:args.sixes,overs:args.overs,bowl_runs:args.bowl_runs,wickets:args.wickets});
                 return({
                     ...playerUpdate._doc,
                     _id:playerUpdate.id

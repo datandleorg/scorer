@@ -26,6 +26,41 @@ const playersSchema = new Schema(
         image:{
             type:String
         },
+        balls:{
+        },
+    overs:{
+        type:Number,
+    },
+    fours:{
+        type:Number,
+    },
+    sixes:{
+        type:Number,
+    },
+    thirty:{
+        type:Number,
+    },
+    fifty:{
+        type:Number,
+    },
+    avg:{
+        type:Number,
+    },
+    matches:{
+        type:Number,
+    },
+    st_rate:{
+        type:Number,
+    },
+    bowl_avg:{
+        type:Number,
+    },
+    bowl_runs:{
+        type:Number,
+    },
+    bowl_rate:{
+        type:Number,
+    },
         user:{
             type:Schema.Types.ObjectId,
             ref:'User'

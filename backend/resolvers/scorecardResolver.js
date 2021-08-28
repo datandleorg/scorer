@@ -1,42 +1,50 @@
-const { findByIdAndUpdate, updateOne } = require("../models/innings");
 const Scorecard = require("../models/innings");
 
 module.exports = {
   scorecard: async () => {
     try {
-      const scorecards = await Scorecard.findOne().exec();
-      return {
-        ...scorecards._doc,
-        _id: scorecards.id,
-      };
+      const scorecards = await Scorecard.findOne()
+        .populate({ path: "innings1.striker", model: "Player" })
+        .populate({ path: "innings1.non_striker", model: "Player" })
+        .populate({ path: "innings1.bowler_1", model: "Player" })
+        .populate({ path: "innings2.striker", model: "Player" })
+        .populate({ path: "innings2.non_striker", model: "Player" })
+        .populate({ path: "innings2.bowler_1", model: "Player" })
+        .exec();
+      return scorecards;
+      // {
+      //   ...scorecards._doc,
+      //   _id: scorecards.id,
+      // };
     } catch (err) {
       console.log(err);
     }
   },
-  createScorecard: async ({ innings1, innings2 }) => {
+  createScorecard: async ({ matchStatus, innings1, innings2 }) => {
     const scorecard = new Scorecard({
+      matchStatus: matchStatus,
       innings1: {
         striker: innings1.striker,
-        nonstriker: innings1.nonstriker,
+        non_striker: innings1.non_striker,
         runs: innings1.runs,
         wickets: innings1.wickets,
-        currentover: innings1.currentover,
-        currentball: innings1.currentball,
-        bowler1: innings1.bowler1,
-        bowler2: innings1.bowler2,
+        current_over: innings1.current_over,
+        current_ball: innings1.current_ball,
+        bowler_1: innings1.bowler_1,
+        bowler_2: innings1.bowler_2,
         balls: innings1.balls,
         target: innings1.target,
         end: innings1.end,
       },
       innings2: {
         striker: innings2.striker,
-        nonstriker: innings2.nonstriker,
+        non_striker: innings2.non_striker,
         runs: innings2.runs,
         wickets: innings2.wickets,
-        currentover: innings2.currentover,
-        currentball: innings2.currentball,
-        bowler1: innings2.bowler1,
-        bowler2: innings2.bowler2,
+        current_over: innings2.current_over,
+        current_ball: innings2.current_ball,
+        bowler_1: innings2.bowler_1,
+        bowler_2: innings2.bowler_2,
         balls: innings2.balls,
         target: innings2.target,
         end: innings2.end,
@@ -45,22 +53,33 @@ module.exports = {
 
     try {
       const result = await scorecard.save();
-      console.log(scorecard);
-      return {
-        ...result._doc,
-        _id: result.id,
-      };
+      const scorecards = await Scorecard.findById(result._id)
+        .populate({ path: "innings1.striker", model: "Player" })
+        .populate({ path: "innings1.non_striker", model: "Player" })
+        .populate({ path: "innings1.bowler_1", model: "Player" })
+        .populate({ path: "innings2.striker", model: "Player" })
+        .populate({ path: "innings2.non_striker", model: "Player" })
+        .populate({ path: "innings2.bowler_1", model: "Player" })
+        .exec();
+      return scorecards;
     } catch (err) {
       console.log(err);
     }
   },
-  updateScorecard: async  ({scorecardId,innings1,innings2})=>{
-    // const innins1 = inninsg1;
-    // const innins2 = innings2;
+  updateScorecard: async ({ scorecardId, matchStatus, innings1, innings2 }) => {
     const scorecardUpdate = await Scorecard.findById(scorecardId);
-     await Scorecard.updateOne({_id:scorecardId},{innings1:innings1,innings2:innings2});
-    //scorecardUpdate.innings1.striker = args.striker;
-    //await scorecardUpdate.save();
-    return scorecardUpdate;
-  }
+    await Scorecard.updateOne(
+      { _id: scorecardId },
+      { matchStatus: matchStatus, innings1: innings1, innings2: innings2 }
+    );
+    const updatedScorecard = await Scorecard.findById(scorecardId)
+      .populate({ path: "innings1.striker", model: "Player" })
+      .populate({ path: "innings1.non_striker", model: "Player" })
+      .populate({ path: "innings1.bowler_1", model: "Player" })
+      .populate({ path: "innings2.striker", model: "Player" })
+      .populate({ path: "innings2.non_striker", model: "Player" })
+      .populate({ path: "innings2.bowler_1", model: "Player" })
+      .exec();
+    return updatedScorecard;
+  },
 };

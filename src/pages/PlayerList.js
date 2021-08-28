@@ -53,7 +53,6 @@ function PlayerList({ editMode = false, dispatch,player }) {
         {
         playersList.some(pl =>pl.user._id === alloweduser) ?
          playersList.map((player, playerIndex) => {
-          console.log(player.image);  
           return (
                 <div>
                  {alloweduser === player.user._id ?
@@ -80,25 +79,25 @@ function PlayerList({ editMode = false, dispatch,player }) {
                         <div className="mr-3">
                           Matches:{" "}
                           <span className="font-weight-bold">
-                            {player.matches ? player.matches : "-"}
+                            {player.matches && player.matches}
                           </span>
                         </div>
                         <div className="mr-3">
                           Runs:{" "}
                           <span className="font-weight-bold">
-                            {player.runs ? player.runs : "-"}
+                            {player.run && player.run}
                           </span>
                         </div>
                         <div className="mr-3">
                           Avg:{" "}
                           <span className="font-weight-bold">
-                            {player.avg ? player.avg : "-"}
+                            {player.avg && player.avg }
                           </span>
                         </div>
                         <div>
                           SRate:{" "}
                           <span className="font-weight-bold">
-                            {player.srate ? player.srate : "-"}
+                            {player.st_rate && player.st_rate}
                           </span>
                         </div>
                       </div>

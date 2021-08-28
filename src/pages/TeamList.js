@@ -16,7 +16,6 @@ function TeamList({ editMode, team }) {
   };
   const context = useContext(Auth);
   const [loading, setloading] = useState(false);
-  //const teamsList = [...team];
   const [teamsList, setTeamsList] = useState([]);
   useEffect(() => {
     //   let teams = team;//getData('teams');
