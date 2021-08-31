@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-08-31T06:10:38.614Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.84" etag="1vVDsEKa5tWMkgjaJhOS" version="15.0.3" type="github">
+<mxfile host="app.diagrams.net" modified="2021-08-31T06:43:14.133Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36 Edg/92.0.902.84" etag="F6qUIY0JStZFiNg6jIZL" version="15.0.3" type="github">
   <diagram id="YFP28rKl4geAstqphtnI" name="Page-1">
     <mxGraphModel dx="868" dy="482" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
@@ -59,16 +59,16 @@
           <mxGeometry x="90" y="670" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="Kl0HB3n8pyvvT0PqTQID-17" value="on run " style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-          <mxGeometry x="70" y="790" width="220" height="200" as="geometry" />
+          <mxGeometry x="70" y="790" width="230" height="370" as="geometry" />
         </mxCell>
         <mxCell id="Kl0HB3n8pyvvT0PqTQID-18" value="get the type of run " style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-17" vertex="1">
-          <mxGeometry y="26" width="220" height="26" as="geometry" />
+          <mxGeometry y="26" width="230" height="26" as="geometry" />
         </mxCell>
         <mxCell id="Kl0HB3n8pyvvT0PqTQID-19" value="update runs in batting object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-17" vertex="1">
-          <mxGeometry y="52" width="220" height="26" as="geometry" />
+          <mxGeometry y="52" width="230" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="Kl0HB3n8pyvvT0PqTQID-20" value="update batsmen career run&#xa;&#xa;in case boundaries , in addition updating&#xa; the runs u also need to update&#xa; boundary data " style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-17" vertex="1">
-          <mxGeometry y="78" width="220" height="122" as="geometry" />
+        <mxCell id="Kl0HB3n8pyvvT0PqTQID-20" value="update batsmen career run&#xa;&#xa;in case boundaries , in addition updating&#xa; the runs u also need to update&#xa; boundary data &#xa;&#xa;update balls in scoreboard and also in &#xa;batting object and also in bowling object&#xa;&#xa;if runs in odd number swapping the &#xa;striker&#xa;&#xa;if over is end (balls to 6) change the &#xa;bowler and swap the striker&#xa;&#xa;update the no. of overs bowled by bowler &#xa;in scoreboard, bowling object and in &#xa;player career" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-17" vertex="1">
+          <mxGeometry y="78" width="230" height="292" as="geometry" />
         </mxCell>
         <mxCell id="Kl0HB3n8pyvvT0PqTQID-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.432;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="Kl0HB3n8pyvvT0PqTQID-22" edge="1">
           <mxGeometry relative="1" as="geometry">
@@ -87,7 +87,7 @@
           <mxGeometry x="610" y="670" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="Kl0HB3n8pyvvT0PqTQID-36" value="on wicket" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-          <mxGeometry x="310" y="800" width="240" height="250" as="geometry" />
+          <mxGeometry x="310" y="800" width="240" height="430" as="geometry" />
         </mxCell>
         <mxCell id="Kl0HB3n8pyvvT0PqTQID-37" value="get bowler and who helped to get the &#xa;wicket" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-36" vertex="1">
           <mxGeometry y="26" width="240" height="44" as="geometry" />
@@ -95,14 +95,14 @@
         <mxCell id="Kl0HB3n8pyvvT0PqTQID-38" value="update the wickets in bowling object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-36" vertex="1">
           <mxGeometry y="70" width="240" height="50" as="geometry" />
         </mxCell>
-        <mxCell id="Kl0HB3n8pyvvT0PqTQID-39" value="update the scorecard out_by object &#xa;by creating string of wickets get by bowler &#xa;and player helped to get the wicket&#xa;&#xa;&#xa;update wickets to the scorecard&#xa;&#xa;update wicket to bowler career wickets" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-36" vertex="1">
-          <mxGeometry y="120" width="240" height="130" as="geometry" />
+        <mxCell id="Kl0HB3n8pyvvT0PqTQID-39" value="update the scorecard out_by object &#xa;by creating string of wickets get by bowler &#xa;and player helped to get the wicket&#xa;&#xa;&#xa;update wickets to the scorecard&#xa;&#xa;update wicket to bowler career wickets&#xa;&#xa;update the balls in scoreboard, bowling, &#xa;batting objects&#xa; &#xa;if over end change the bowler &#xa;&#xa;change the batsmen by getting new player&#xa;&#xa;if type of wicket runout or catch out &#xa;check the batsmen reach or not and &#xa;change the striker&#xa;&#xa;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-36" vertex="1">
+          <mxGeometry y="120" width="240" height="310" as="geometry" />
         </mxCell>
         <mxCell id="Kl0HB3n8pyvvT0PqTQID-40" value="on extras" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
-          <mxGeometry x="580" y="800" width="240" height="150" as="geometry" />
+          <mxGeometry x="580" y="800" width="240" height="310" as="geometry" />
         </mxCell>
-        <mxCell id="Kl0HB3n8pyvvT0PqTQID-41" value="get the type of extra like wide,noball,&#xa;byes created by bowler&#xa;&#xa;update those extras to the bowling object&#xa;&#xa;update the run if any frim extras&#xa; to the batting object&#xa;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-40" vertex="1">
-          <mxGeometry y="26" width="240" height="124" as="geometry" />
+        <mxCell id="Kl0HB3n8pyvvT0PqTQID-41" value="get the type of extra like wide, no-ball,&#xa;byes created by bowler&#xa;&#xa;check if re-balls and runs for the no-ball &#xa;and wide &#xa;&#xa;update those extras to the &#xa;bowling object&#xa;&#xa;update the run if any from extras&#xa; to the batting object&#xa;&#xa;update the extras to its corresponding &#xa; objects&#xa;&#xa;if re-ball is selected then add extra balls in&#xa; over to scorecard&#xa;&#xa;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="Kl0HB3n8pyvvT0PqTQID-40" vertex="1">
+          <mxGeometry y="26" width="240" height="284" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
