@@ -31,6 +31,12 @@ const matchSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    date:{
+      type:String,
+    },
+    matchWonby:{
+      type:String,
+    },
     scorecard: {
       type: Schema.Types.ObjectId,
       ref: "Scorecard",

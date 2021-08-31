@@ -93,7 +93,7 @@ function MatchList({ editMode = false, match }) {
                             </span>
                           </div>
                         </div>
-                        <div className="text-secondary smaller">11/09/1992</div>
+                        <div className="text-secondary smaller">{matchvalue.date}</div>
                       </div>
                     </div>
                   </div>

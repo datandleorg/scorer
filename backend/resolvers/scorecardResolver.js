@@ -12,10 +12,21 @@ module.exports = {
         .populate({ path: "innings2.bowler_1", model: "Player" })
         .exec();
       return scorecards;
-      // {
-      //   ...scorecards._doc,
-      //   _id: scorecards.id,
-      // };
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  getScorecardById: async ({Id}) => {
+    try {
+      const singlescorecard = await Scorecard.findOne({_id:Id})
+        .populate({ path: "innings1.striker", model: "Player" })
+        .populate({ path: "innings1.non_striker", model: "Player" })
+        .populate({ path: "innings1.bowler_1", model: "Player" })
+        .populate({ path: "innings2.striker", model: "Player" })
+        .populate({ path: "innings2.non_striker", model: "Player" })
+        .populate({ path: "innings2.bowler_1", model: "Player" })
+        .exec();
+      return singlescorecard;
     } catch (err) {
       console.log(err);
     }
@@ -83,3 +94,21 @@ module.exports = {
     return updatedScorecard;
   },
 };
+
+// updateScorecard: async ({ scorecardId, matchStatus, innings1, innings2 }) => {
+//   const scorecardUpdate = await Scorecard.findById(scorecardId);
+//   await Scorecard.updateOne(
+//     { _id: scorecardId },
+//     { matchStatus: matchStatus, innings1:{ striker:{_id:innings1.striker._id,name:innings1.striker.name,run:innings1.striker.run,wickets:innings1.striker.wickets,overs:innings1.striker.overs,bowl_runs:innings1.striker.bowl_runs,fours:innings1.striker.fours,sixes:innings1.striker.sixes,balls:innings1.striker.balls},non_striker:innings1.non_striker,bowler_1:innings1.bowler_1,runs:innings1.runs,wickets:innings1.wickets,current_over:innings1.current_over,current_ball:innings1.current_ball,end:innings1.end}, innings2: innings2 }
+//   );
+//   const updatedScorecard = await Scorecard.findById(scorecardId)
+//     .populate({ path: "innings1.striker", model: "Player" })
+//     .populate({ path: "innings1.non_striker", model: "Player" })
+//     .populate({ path: "innings1.bowler_1", model: "Player" })
+//     .populate({ path: "innings2.striker", model: "Player" })
+//     .populate({ path: "innings2.non_striker", model: "Player" })
+//     .populate({ path: "innings2.bowler_1", model: "Player" })
+//     .exec();
+//   return updatedScorecard;
+// },
+// };

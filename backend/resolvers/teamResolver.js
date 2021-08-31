@@ -46,10 +46,10 @@ module.exports = {
         console.log(err);
       });
   },
-  updateTeam: async (args) => {
+  updateTeam: async ({teamId,teamData}) => {
     try {
       const teamUpdate = await Team.findById(args.teamId);
-      await Team.updateOne({ _id: args.teamId }, { $inc: { score: 50 } });
+      await Team.updateOne({ _id:args.teamId }, {name:args.name,mathes:args.matches,loss:args.loss,won:args.won,tie:args.tie});
       return {
         ...teamUpdate._doc,
         _id: teamUpdate.id,

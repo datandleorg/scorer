@@ -236,6 +236,123 @@ export const getScorecard = () => {
   });
   return res;
 };
+export const getScorecardById = (Id) => {
+  const res = axios({
+    url: `${baseURL}:${API_PORT}/graphql`,
+    method: "post",
+    data: {
+      query: `query GetScorecardById($Id:ID){
+                getScorecardById(Id:$Id){
+                _id
+                  matchStatus
+                  innings1{
+                  striker{
+                  _id
+                  name
+                  run
+                  fours
+                  sixes
+                  wickets
+                  bowl_runs
+                  overs
+                  balls
+                  st_rate
+                  }
+                  non_striker{
+                  _id
+                  name
+                  run
+                  fours
+                  sixes
+                  overs
+                  wickets
+                  bowl_runs
+                  balls
+                  st_rate
+                  }
+                  bowler_1{
+                  _id
+                  name
+                  run
+                  fours
+                  sixes
+                  overs
+                  wickets
+                  bowl_runs
+                  balls
+                  st_rate
+                  }
+                  bowler_2
+                  current_ball
+                  current_over
+                  runs
+                  wickets
+                  target
+                  balls{
+                    type
+                    value
+                  }
+                  end
+                }
+                innings2{
+                  striker{
+                    _id
+                    name
+                    run
+                    fours
+                    sixes
+                    wickets
+                    bowl_runs
+                    overs
+                    balls
+                    st_rate
+                  }
+                  non_striker{
+                    _id
+                    name
+                    run
+                    fours
+                    wickets
+                    bowl_runs
+                    sixes
+                    overs
+                    balls
+                    st_rate
+                  }
+                  bowler_1
+                  {
+                    _id
+                    name
+                    run
+                    fours
+                    wickets
+                    bowl_runs
+                    sixes
+                    overs
+                    balls
+                    st_rate
+                  }
+                  bowler_2
+                  current_ball
+                  current_over
+                  runs
+                  wickets
+                  target
+                  balls{
+                    type
+                    value
+                  }
+                  end
+                }
+            }
+        }`,
+        variables: {
+        Id:Id,
+        },
+    },
+  });
+  return res;
+};
 export const updateScorecard = (scoreCardId,scoreCard) => {
   const scorecardId = scoreCardId;
   const matchStatus = scoreCard.matchStatus;

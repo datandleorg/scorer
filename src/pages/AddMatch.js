@@ -26,6 +26,7 @@ function AddMatch({ dispatch, team }) {
   const [teams, setTeams] = useState([]);
   const [loading, setloading] = useState(false);
   const history = useHistory();
+  const [scoreCard, setscorecard] = useState();
   // useEffect(() => {
   //   getTeamData();
   // }, []);
@@ -34,27 +35,38 @@ function AddMatch({ dispatch, team }) {
     history.push(route);
   };
   let scorecard = {
-    innings_1: {
+    matchStatus: "start",
+    innings1: {
       runs: 0,
-      wkts: 0,
-      current_over: 0, 
-      current_ball: 0,
-      target: 0,
-      bowler_2: "",
-      end: false,
-    },
-    innings_2: {
-      runs: 0,
-      wkts: 0,
+      wickets: 0,
       current_over: 0,
       current_ball: 0,
       target: 0,
-      bowler_2: "",
+      bowler_2: " ",
       end: false,
     },
-  }
+    innings2: {
+      runs: 0,
+      wickets: 0,
+      current_over: 0,
+      current_ball: 0,
+      target: 0,
+      bowler_2: " ",
+      end: false,
+    },
+  };
   const handleForm = (value, key) => {
     setMatchForm({ ...match, [key]: value });
+    if (key === "toss_won_by") {
+      createScorecard(scorecard)
+        .then((res) => {
+          console.log(res.data.data.createScorecard);
+          setscorecard(res.data.data.createScorecard);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   useEffect(() => {
@@ -82,7 +94,6 @@ function AddMatch({ dispatch, team }) {
   // };
   const createMatch = () => {
     // getData('matches');
-    console.log(match);
 
     // if (!matches) matches = [];
     const date = moment();
@@ -95,19 +106,20 @@ function AddMatch({ dispatch, team }) {
       batting_first: match.batting_first,
       overs: match.overs,
       date: date.format("DD/MM/YYYY"),
-      teams: [match.team_1, match.team_2]
+      teams: [match.team_1, match.team_2],
     };
-
+    console.log(date.format("DD/MM/YYYY"));
     let matches = [];
     matches.push({ ...matchvalue, id: matches.length + 1 });
     dispatch(addingmatch(matches));
-    console.log(matchvalue.team_1);
     const matchData = {
       overs: +matchvalue.overs,
       team1: matchvalue.team_1.value,
       team2: matchvalue.team_2.value,
       tossWonBy: matchvalue.toss_won_by.label,
       battingFirst: matchvalue.batting_first.label,
+      date: matchvalue.date,
+      scorecard: scoreCard?._id,
       token: context.token,
     };
     setloading(true);
@@ -120,12 +132,7 @@ function AddMatch({ dispatch, team }) {
       .catch((err) => {
         console.log(err);
       });
-
-      createScorecard(scorecard)
-      .then(res=>{console.log(res.data.data.createScorecard)})
-      .catch(err=>{console.log(err)});
-
-    };
+  };
   //putData('matches', matches);
   //match = matches;
   // let match = matches.map((m,index)=>{

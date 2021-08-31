@@ -36,14 +36,20 @@ module.exports = {
                 battingStyle:args.playerInput.battingStyle,
                 bowlingStyle:args.playerInput.bowlingStyle,
                 run:args.playerInput.run,
+                totalRuns:args.playerInput.totalRuns,
                 wickets:args.playerInput.wickets,
+                totalWickets:args.playerInput.totalWickets,
                 image:args.playerInput.image,
                 overs:args.playerInput.overs,
+                totalOvers:args.playerInput.totalOvers,
                 fours:args.playerInput.fours,
+                totalFours:args.playerInput.totalFours,
                 sixes:args.playerInput.sixes,
+                totalSixes:args.playerInput.totalSixes,
                 thirty:args.playerInput.thirty,
                 fifty:args.playerInput.fifty,
                 balls:args.playerInput.balls,
+                totalBalls:args.playerInput.totalBalls,
                 st_rate:args.playerInput.st_rate,
                 matches:args.playerInput.matches,
                 bowl_run:args.playerInput.bowl_run,
@@ -66,7 +72,7 @@ module.exports = {
     updatePlayer:async (args)=>{
         try{
             const playerUpdate = await Player.findById(args.playerId);
-         await Player.updateOne({_id:args.playerId},{name:args.name,run:args.run,balls:args.balls,fours:args.fours,sixes:args.sixes,overs:args.overs,bowl_runs:args.bowl_runs,wickets:args.wickets});
+         await Player.updateOne({_id:args.playerId},{name:args.name,run:args.run,balls:args.balls,fours:args.fours,sixes:args.sixes,overs:args.overs,bowl_runs:args.bowl_runs,wickets:args.wickets,totalRuns:args.totalRuns,totalBalls:args.totalBalls,totalWickets:args.totalWickets,totalFours:args.totalFours,totalSixes:args.totalSixes});
                 return({
                     ...playerUpdate._doc,
                     _id:playerUpdate.id

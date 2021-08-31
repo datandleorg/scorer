@@ -13,6 +13,12 @@ type Player {
     overs:Int
     fours:Int
     sixes:Int
+    totalRuns:Int
+    totalWickets:Int
+    totalBalls:Int
+    totalOvers:Int
+    totalFours:Int
+    totalSixes:Int 
     thirty:Int
     fifty:Int
     avg:Int
@@ -63,7 +69,9 @@ type Match{
     team1:Team
     team2:Team
     user:User
-    scorecard:Scorecard
+    scorecard:ID
+    date:String
+    matchWonby:String
 }
 type User{
     _id:ID!
@@ -98,6 +106,12 @@ input PlayerInput{
     overs:Int
     fours:Int
     sixes:Int
+    totalRuns:Int
+    totalWickets:Int
+    totalBalls:Int
+    totalOvers:Int
+    totalFours:Int
+    totalSixes:Int    
     thirty:Int
     fifty:Int
     avg:Int
@@ -135,6 +149,9 @@ input MatchInput{
     team2:ID!
     tossWonBy:String!
     battingFirst:String!
+    scorecard:ID
+    date:String
+    matchWonby:String
 }
 type RootQuery{
     players:[Player!]!
@@ -146,6 +163,7 @@ type RootQuery{
     getPlayerById(playerId:ID!):Player!
     getTeamById(teamId:ID!):Team!
     getMatchById(matchId:ID!):Match!
+    getScorecardById(Id:ID):Scorecard
 }
 type RootMutation{
     createPlayer(playerInput:PlayerInput):Player
@@ -155,8 +173,9 @@ type RootMutation{
     createInnings(inningsInput:InningsInput):Innings
     createScorecard(matchStatus:String,innings1:InningsInput,innings2:InningsInput):Scorecard
     updateScorecard(scorecardId:ID,matchStatus:String,innings1:InningsInput,innings2:InningsInput):Scorecard
-    updatePlayer(playerId:ID!,name:String,run:Int,balls:Int,fours:Int,sixes:Int,overs:Int,bowl_runs:Int,wickets:Int):Player
-    updateTeam(teamId:ID!):Team
+    updatePlayer(playerId:ID,name:String,run:Int,balls:Int,fours:Int,sixes:Int,overs:Int,bowl_runs:Int,wickets:Int,totalRuns:Int,totalWickets:Int,totalBalls:Int,totalWickets:Int,totalFours:Int,totalSixes:Int):Player
+    updateTeam(teamId:ID,name:String,matches:Int,won:Int,loss:Int,tie:Int):Team
+    updateMatch(matchId:ID,matchWonby:String):Match
     addPlayerToTeam(teamId:ID!,playerId:ID!):Team
     deletePlayer(playerId:ID!):Player
     deleteTeam(teamId:ID!):Team

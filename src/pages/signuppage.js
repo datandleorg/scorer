@@ -15,7 +15,7 @@ const Signuppage = (props) => {
     setLogin({ ...Login, [key]: value });
     console.log(Login);
   };
-  const [isLoading,setLoading] = useState;
+  const [isLoading,setLoading] = useState(false);
   const signupHandler = () => {
     const email = Login.email;
     const password = Login.password;

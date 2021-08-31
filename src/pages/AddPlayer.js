@@ -9,8 +9,7 @@ import Loader from "../Components/Common/Loader";
 import { addplayer } from "../actions/actions";
 import { setData } from "../services/playerservice";
 import { connect } from "react-redux";
-import axios from "axios";
-import { baseURL, FILE_PORT } from "../constants/appConstants";
+import {addImage} from "../services/addImageServices";
 
 const defaultStats = {
   stats: {
@@ -59,12 +58,8 @@ function AddPlayer({ dispatch, player }, props) {
     const data = new FormData();
     data.append("image", e.target.files[0]);
     setloading(true);
-    axios({
-      url: `${baseURL}:${FILE_PORT}/single`,
-      method: "post",
-      data: data,
-    })
-      .then((res) => {
+      
+         addImage(data).then((res) => {
         console.log(res.data);
         setImage(res.data);
       })
@@ -151,6 +146,7 @@ function AddPlayer({ dispatch, player }, props) {
               <input
                 type="file"
                 name="image"
+                accept="image/*"
                 ref={playerimgUpload}
                 onChange={changeHandler}
                 style={{ display: "none" }}

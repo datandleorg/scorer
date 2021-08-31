@@ -7,10 +7,9 @@ import Auth from "../context/auth-context";
 //import { getData, putData } from "../utils/storgeService";
 import { addteam } from "../actions/actions";
 import { connect } from "react-redux";
-import axios from "axios";
 import { CreateTeam } from "../services/teamservice";
 import Loader from "../Components/Common/Loader";
-import { baseURL, FILE_PORT } from "../constants/appConstants";
+import {addImage} from "../services/addImageServices";
 
 function AddTeam({ dispatch, team }) {
   const [teamForm, setTeamForm] = useState({
@@ -37,11 +36,7 @@ function AddTeam({ dispatch, team }) {
     const data = new FormData();
     data.append("image", e.target.files[0]);
     setloading(true);
-    axios({
-      url: `${baseURL}:${FILE_PORT}/single`,
-      method: "post",
-      data: data,
-    })
+    addImage(data)
       .then((res) => {
         console.log(res.data);
         setImage(res.data);
@@ -121,6 +116,7 @@ function AddTeam({ dispatch, team }) {
               <input
                 type="file"
                 name="image"
+                accept="image/*"
                 ref={teamimageUpload}
                 onChange={changeHandler}
                 style={{ display: "none" }}

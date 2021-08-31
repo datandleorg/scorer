@@ -30,6 +30,9 @@ module.exports = {
       team2: args.matchInput.team2,
       tossWonBy: args.matchInput.tossWonBy,
       battingFirst: args.matchInput.battingFirst,
+      scorecard:args.matchInput.scorecard,
+      date:args.matchInput.date,
+      matchWonby:args.matchInput.matchWonby,
       user: req.userId,
     });
     try {
@@ -66,6 +69,26 @@ module.exports = {
         })
         .exec();
       return matches;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  updateMatch: async (args) => {
+    try {
+      const updateMatch = await Match.findById(args.matchId)
+      await Match.updateOne({_id:args.matchId},{matchWonby:args.matchWonby})
+        const updatedMatch = await Match.findById(args.matchId).populate({
+          path: "team1",
+          model: "Team",
+          populate: { path: "players", model: "Player" },
+        })
+        .populate({
+          path: "team2",
+          model: "Team",
+          populate: { path: "players", model: "Player" },
+        })
+        .exec();
+      return updatedMatch;
     } catch (err) {
       console.log(err);
     }

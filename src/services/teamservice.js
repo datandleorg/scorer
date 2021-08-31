@@ -10,7 +10,7 @@ export const CreateTeam = (data) => {
     method: "post",
     data: {
       query: `mutation CreateTeam($name:String!,$image:String){
-              createTeam(teamInput:{name:$name,image:$image,score:450,matches:4,won:2,loss:1,tie:1}){
+              createTeam(teamInput:{name:$name,image:$image,score:0,matches:0,won:0,loss:0,tie:0}){
                 _id
                 name
                 image
@@ -153,6 +153,51 @@ export const DeletePlayerFromTeam = async (playerId, teamId) => {
         teamId: teamId,
         playerId: playerId,
       },
+    },
+  });
+  return res;
+};
+
+export const updateTeam = (data) => {
+  const name = data.name;
+  const matches = data.matches;
+  const won = data.won;
+  const loss = data.loss;
+  const tie = data.tie;
+  const token = data.token;
+  const res = axios({
+    url: `${baseURL}:${API_PORT}/graphql`,
+    method: "post",
+    data: {
+      query: `mutation CreateTeam($name:String!,$image:String,$matches:Int,$won:Int,$loss:Int,$tie:Int){
+              createTeam(teamInput:{name:$name,image:$image,matches:$matches,won:$won,loss:$loss,tie:$tie}){
+                _id
+                name
+                image
+                score
+                matches
+                won
+                loss
+                tie
+                user{
+                  _id
+                }
+                players{
+                  _id
+                }
+              }
+          }`,
+      variables: {
+        name: name,
+        matches:matches,
+        won:won,
+        loss:loss,
+        tie:tie,
+      },
+    },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
     },
   });
   return res;

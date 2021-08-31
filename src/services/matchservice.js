@@ -7,14 +7,17 @@ export const CreateMatch = (matchData) => {
   const team2 = matchData.team2;
   const tossWonBy = matchData.tossWonBy;
   const battingFirst = matchData.battingFirst;
+  const scorecard = matchData.scorecard;
+  const date = matchData.date;
+  const matchWonby = matchData.matchWonby;
   const token = matchData.token;
 
   const res = axios({
     url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
-      query: `mutation CreateMatch($overs:Int!,$team1:ID!,$team2:ID!,$tossWonBy:String!,$battingFirst:String!){
-                  createMatch(matchInput:{overs:$overs,team1:$team1,team2:$team2,tossWonBy:$tossWonBy,battingFirst:$battingFirst}){
+      query: `mutation CreateMatch($overs:Int!,$team1:ID!,$team2:ID!,$tossWonBy:String!,$battingFirst:String!,$scorecard:ID,$date:String,$matchWonby:String){
+                  createMatch(matchInput:{overs:$overs,team1:$team1,team2:$team2,tossWonBy:$tossWonBy,battingFirst:$battingFirst,scorecard:$scorecard,date:$date,matchWonby:$matchWonby}){
                    _id
                    overs
                    team1{
@@ -27,6 +30,9 @@ export const CreateMatch = (matchData) => {
                    }
                    tossWonBy
                    battingFirst 
+                   scorecard
+                   date
+                   matchWonby
                   }
            }`,
       variables: {
@@ -35,6 +41,9 @@ export const CreateMatch = (matchData) => {
         team2: team2,
         tossWonBy: tossWonBy,
         battingFirst: battingFirst,
+        scorecard:scorecard,
+        date:date,
+        matchWonby:matchWonby,
       },
     },
     headers: {
@@ -67,6 +76,9 @@ export const getMatch = () => {
                   }
                    tossWonBy
                    battingFirst 
+                   scorecard
+                   date
+                   matchWonby
                   }
            }`,
     },
@@ -120,11 +132,75 @@ export const GetMatchById = (matchId) => {
                     _id
                   }
                    tossWonBy
-                   battingFirst                
+                   battingFirst
+                   scorecard
+                   date
+                   matchWonby                
                   }
                 }`,
       variables: {
         matchId: matchId,
+      },
+    },
+  });
+  return res;
+};
+export const updateMatch = (matchId,matchWonby) => {
+  const res = axios({
+    url: `${baseURL}:${API_PORT}/graphql`,
+    method: "post",
+    data: {
+      query: `mutation UpdateMatch($matchId:ID!,$matchWonby:String){
+                    updateMatch(matchId:$matchId,matchWonby:$matchWonby){
+                   _id
+                   overs
+                   team1{
+                     _id
+                     name
+                     score
+                     players{
+                       _id
+                       name
+                       run
+                       wickets
+                       fours
+                       sixes
+                       balls
+                       overs
+                       bowl_runs
+                       st_rate
+                     }
+                    }
+                    team2{
+                     _id
+                     name
+                     score
+                     players{
+                      _id
+                      name
+                      run
+                      fours
+                      wickets
+                       sixes
+                       balls
+                       overs
+                       bowl_runs
+                       st_rate
+                    }
+                   }
+                   user{
+                    _id
+                  }
+                   tossWonBy
+                   battingFirst
+                   scorecard
+                   date
+                   matchWonby                
+                  }
+                }`,
+      variables: {
+        matchId: matchId,
+        matchWonby:matchWonby,
       },
     },
   });
