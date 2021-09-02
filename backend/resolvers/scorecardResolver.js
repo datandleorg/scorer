@@ -7,9 +7,13 @@ module.exports = {
         .populate({ path: "innings1.striker", model: "Player" })
         .populate({ path: "innings1.non_striker", model: "Player" })
         .populate({ path: "innings1.bowler_1", model: "Player" })
+        .populate({ path: "innings1.batting.scores.batsmen", model: "Player" })
+        .populate({ path: "innings1.bowling.bowlerscores.bowler", model: "Player" })
         .populate({ path: "innings2.striker", model: "Player" })
         .populate({ path: "innings2.non_striker", model: "Player" })
         .populate({ path: "innings2.bowler_1", model: "Player" })
+        .populate({ path: "innings2.batting.scores.batsmen", model: "Player" })
+        .populate({ path: "innings2.bowling.bowlerscores.bowler", model: "Player" })
         .exec();
       return scorecards;
     } catch (err) {
@@ -22,9 +26,13 @@ module.exports = {
         .populate({ path: "innings1.striker", model: "Player" })
         .populate({ path: "innings1.non_striker", model: "Player" })
         .populate({ path: "innings1.bowler_1", model: "Player" })
+        .populate({ path: "innings1.batting.scores.batsmen", model: "Player" })
+        .populate({ path: "innings1.bowling.bowlerscores.bowler", model: "Player" })
         .populate({ path: "innings2.striker", model: "Player" })
         .populate({ path: "innings2.non_striker", model: "Player" })
         .populate({ path: "innings2.bowler_1", model: "Player" })
+        .populate({ path: "innings2.batting.scores.batsmen", model: "Player" })
+        .populate({ path: "innings2.bowling.bowlerscores.bowler", model: "Player" })
         .exec();
       return singlescorecard;
     } catch (err) {
@@ -46,6 +54,8 @@ module.exports = {
         balls: innings1.balls,
         target: innings1.target,
         end: innings1.end,
+        batting:innings1.batting,
+        bowling:innings1.bowling,      
       },
       innings2: {
         striker: innings2.striker,
@@ -59,6 +69,8 @@ module.exports = {
         balls: innings2.balls,
         target: innings2.target,
         end: innings2.end,
+        batting:innings2.batting,
+        bowling:innings2.bowling,      
       },
     });
 
@@ -68,9 +80,13 @@ module.exports = {
         .populate({ path: "innings1.striker", model: "Player" })
         .populate({ path: "innings1.non_striker", model: "Player" })
         .populate({ path: "innings1.bowler_1", model: "Player" })
+        .populate({ path: "innings1.batting.scores.batsmen", model: "Player" })
+        .populate({ path: "innings1.bowling.bowlerscores.bowler", model: "Player" })
         .populate({ path: "innings2.striker", model: "Player" })
         .populate({ path: "innings2.non_striker", model: "Player" })
         .populate({ path: "innings2.bowler_1", model: "Player" })
+        .populate({ path: "innings2.batting.scores.batsmen", model: "Player" })
+        .populate({ path: "innings2.bowling.bowlerscores.bowler", model: "Player" })
         .exec();
       return scorecards;
     } catch (err) {
@@ -87,9 +103,13 @@ module.exports = {
       .populate({ path: "innings1.striker", model: "Player" })
       .populate({ path: "innings1.non_striker", model: "Player" })
       .populate({ path: "innings1.bowler_1", model: "Player" })
+      .populate({ path: "innings1.batting.scores.batsmen", model: "Player" })
+      .populate({ path: "innings1.bowling.bowlerscores.bowler", model: "Player" })
       .populate({ path: "innings2.striker", model: "Player" })
       .populate({ path: "innings2.non_striker", model: "Player" })
       .populate({ path: "innings2.bowler_1", model: "Player" })
+      .populate({ path: "innings2.batting.scores.batsmen", model: "Player" })
+      .populate({ path: "innings2.bowling.bowlerscores.bowler", model: "Player" })
       .exec();
     return updatedScorecard;
   },

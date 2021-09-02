@@ -61,6 +61,46 @@ export const createScorecard = (scorecard) => {
             }
             target
             end
+            batting{
+              scores{
+              batsmen{
+                _id
+                name
+              }
+              runs
+              balls
+              one
+              two 
+              four
+              six
+              st_rate
+              }
+              total{
+                runs
+                wickets
+                over
+              }
+              extras{
+                byes
+                wide
+                no_ball  
+              }
+            }
+            bowling{
+              bowlerscores{
+                bowler{
+                  _id
+                  name
+                }
+                overs
+                wickets
+                runs
+                maiden
+                wide
+                no_ball
+                econ
+              }
+            }
         }
         innings2{
             striker{
@@ -110,6 +150,46 @@ export const createScorecard = (scorecard) => {
             }
             target
             end
+            batting{
+              scores{
+              batsmen{
+                _id
+                name
+              }
+              runs
+              balls
+              one
+              two 
+              four
+              six
+              st_rate
+              }
+              total{
+                runs
+                wickets
+                over
+              }
+              extras{
+                byes
+                wide
+                no_ball  
+              }
+            }
+            bowling{
+              bowlerscores{
+                bowler{
+                  _id
+                  name
+                }
+                overs
+                wickets
+                runs
+                maiden
+                wide
+                no_ball
+                econ
+              }
+            }
         }
         }
     }`,
@@ -179,6 +259,47 @@ export const getScorecard = () => {
                     value
                   }
                   end
+                  batting{
+                    scores{
+                    batsmen{
+                      _id
+                      name
+                    }
+                    runs
+                    balls
+                    one
+                    two 
+                    four
+                    six
+                    st_rate
+                    }
+                    total{
+                      runs
+                      wickets
+                      over
+                    }
+                    extras{
+                      byes
+                      wide
+                      no_ball  
+                    }
+                  }
+                  bowling{
+                    bowlerscores{
+                      bowler
+                      {
+                        _id
+                        name
+                      }
+                      overs
+                      wickets
+                      runs
+                      maiden
+                      wide
+                      no_ball
+                      econ
+                    }
+                  }
                 }
                 innings2{
                   striker{
@@ -229,6 +350,46 @@ export const getScorecard = () => {
                     value
                   }
                   end
+                  batting{
+                    scores{
+                    batsmen{
+                      _id
+                      name
+                    }
+                    runs
+                    balls
+                    one
+                    two 
+                    four
+                    six
+                    st_rate
+                    }
+                    total{
+                      runs
+                      wickets
+                      over
+                    }
+                    extras{
+                      byes
+                      wide
+                      no_ball  
+                    }
+                  }
+                  bowling{
+                    bowlerscores{
+                      bowler{
+                        _id
+                        name
+                      }
+                      overs
+                      wickets
+                      runs
+                      maiden
+                      wide
+                      no_ball
+                      econ
+                    }
+                  }
                 }
             }
         }`,
@@ -293,6 +454,46 @@ export const getScorecardById = (Id) => {
                     value
                   }
                   end
+                  batting{
+                    scores{
+                    batsmen{
+                      _id
+                      name
+                    }
+                    runs
+                    balls
+                    one
+                    two 
+                    four
+                    six
+                    st_rate
+                    }
+                    total{
+                      runs
+                      wickets
+                      over
+                    }
+                    extras{
+                      byes
+                      wide
+                      no_ball  
+                    }
+                  }
+                  bowling{
+                    bowlerscores{
+                      bowler{
+                        _id
+                        name
+                      }
+                      overs
+                      wickets
+                      runs
+                      maiden
+                      wide
+                      no_ball
+                      econ
+                    }
+                  }
                 }
                 innings2{
                   striker{
@@ -343,6 +544,46 @@ export const getScorecardById = (Id) => {
                     value
                   }
                   end
+                  batting{
+                    scores{
+                    batsmen{
+                      _id
+                      name
+                    }
+                    runs
+                    balls
+                    one
+                    two 
+                    four
+                    six
+                    st_rate
+                    }
+                    total{
+                      runs
+                      wickets
+                      over
+                    }
+                    extras{
+                      byes
+                      wide
+                      no_ball  
+                    }
+                  }
+                  bowling{
+                    bowlerscores{
+                      bowler{
+                        _id
+                        name
+                      }
+                      overs
+                      wickets
+                      runs
+                      maiden
+                      wide
+                      no_ball
+                      econ
+                    }
+                  }
                 }
             }
         }`,
@@ -414,6 +655,46 @@ export const updateScorecard = (scoreCardId,scoreCard) => {
                   value
                 }
                 end
+                batting{
+                  scores{
+                  batsmen{
+                    _id
+                    name
+                  }
+                  runs
+                  balls
+                  one
+                  two 
+                  four
+                  six
+                  st_rate
+                  }
+                  total{
+                    runs
+                    wickets
+                    over
+                  }
+                  extras{
+                    byes
+                    wide
+                    no_ball  
+                  }
+                }
+                bowling{
+                  bowlerscores{
+                    bowler{
+                      _id
+                      name
+                    }
+                    overs
+                    wickets
+                    runs
+                    maiden
+                    wide
+                    no_ball
+                    econ
+                  }
+                }
               }
               innings2{
                 striker{
@@ -464,6 +745,46 @@ export const updateScorecard = (scoreCardId,scoreCard) => {
                   value
                 }
                 end
+                batting{
+                  scores{
+                  batsmen{
+                    _id
+                    name
+                  }
+                  runs
+                  balls
+                  one
+                  two 
+                  four
+                  six
+                  st_rate
+                  }
+                  total{
+                    runs
+                    wickets
+                    over
+                  }
+                  extras{
+                    byes
+                    wide
+                    no_ball  
+                  }
+                }
+                bowling{
+                  bowlerscores{
+                    bowler{
+                      _id
+                      name
+                    }
+                    overs
+                    wickets
+                    runs
+                    maiden
+                    wide
+                    no_ball
+                    econ
+                  }
+                }
               }
             }
         }`,
@@ -544,6 +865,46 @@ export const updates = (scoreCardId, scoreCard, playerId, data) => {
                   value
                 }
                 end
+                batting{
+                  scores{
+                  batsmen{
+                    _id
+                    name
+                  }
+                  runs
+                  balls
+                  one
+                  two 
+                  four
+                  six
+                  st_rate
+                  }
+                  total{
+                    runs
+                    wickets
+                    over
+                  }
+                  extras{
+                    byes
+                    wide
+                    no_ball  
+                  }
+                }
+                bowling{
+                  bowlerscores{
+                    bowler{
+                      _id
+                      name
+                    }
+                    overs
+                    wickets
+                    runs
+                    maiden
+                    wide
+                    no_ball
+                    econ
+                  }
+                }
               }
               innings2{
                 striker{
@@ -593,6 +954,46 @@ export const updates = (scoreCardId, scoreCard, playerId, data) => {
                   value
                 }
                 end
+                batting{
+                  scores{
+                  batsmen{
+                    _id
+                    name
+                  }
+                  runs
+                  balls
+                  one
+                  two 
+                  four
+                  six
+                  st_rate
+                  }
+                  total{
+                    runs
+                    wickets
+                    over
+                  }
+                  extras{
+                    byes
+                    wide
+                    no_ball  
+                  }
+                }
+                bowling{
+                  bowlerscores{
+                    bowler{
+                      _id
+                      name
+                    }
+                    overs
+                    wickets
+                    runs
+                    maiden
+                    wide
+                    no_ball
+                    econ
+                  }
+                }
               }
             }
               updatePlayer(playerId:$playerId,name:$name,run:$run,balls:$balls,fours:$fours,sixes:$sixes,overs:$overs,bowl_runs:$bowl_runs){

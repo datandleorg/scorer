@@ -27,11 +27,16 @@ module.exports = {
       balls: args.inningsInput.balls,
       target: args.inningsInput.target,
       end: args.inningsInput.end,
+      batting:args.inningsInput.batting,
+      bowling:args.inningsInput.bowling,      
     });
     console.log(innings);
     try {
       const result = await innings.populate({path:"striker",model:"Player"})
-      .populate({path:"non_striker",model:"Player"}).exec();
+      .populate({path:"non_striker",model:"Player"})
+      .populate({path:"batting",model:"batting"})
+      .populate({path:"bowling",model:"bowling"})
+      .exec();
       console.log(result._doc);
       return {
         ...result._doc,

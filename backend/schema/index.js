@@ -54,12 +54,53 @@ type Innings{
     balls:[Balls]
     target:Int
     end:Boolean
+    batting:Batting
+    bowling:Bowling
 }
 type Scorecard{
     _id:ID
     matchStatus:String
     innings1:Innings
     innings2:Innings
+}
+type Batting{
+    scores:[Score]
+    total:Total
+    extras:Extras
+}
+type Bowling{
+    bowlerscores:[BowlerScore]
+}
+type Score{
+    batsmen:Player
+    runs:Int
+    balls:Int
+    one:Int
+    two:Int
+    four:Int
+    six:Int
+    st_rate:Int
+    out_by:String
+}
+type Extras{
+    wide:Int
+    no_ball:Int
+    byes:Int
+}
+type Total{
+    runs:Int
+    wickets:Int
+    over:Float
+}
+type BowlerScore{
+    bowler:Player
+    wickets:Int
+    overs:Int
+    maiden:Int
+    runs:Int
+    wide:Int
+    no_ball:Int
+    econ:Float 
 }
 type Match{
     _id:ID!
@@ -133,6 +174,8 @@ input InningsInput{
     balls:[BallsInput]
     target:Int
     end:Boolean
+    batting:BattingInput
+    bowling:BowlingInput
 }
 input TeamInput{
     name:String!
@@ -152,6 +195,45 @@ input MatchInput{
     scorecard:ID
     date:String
     matchWonby:String
+}
+input BattingInput{
+    scores:[ScoreInput]
+    total:TotalInput
+    extras:ExtrasInput
+}
+input BowlingInput{
+    bowlerscores:[BowlerScoreInput]
+}
+input ScoreInput{
+    batsmen:ID
+    runs:Int
+    balls:Int
+    one:Int
+    two:Int
+    four:Int
+    six:Int
+    st_rate:Int
+    out_by:String
+}
+input ExtrasInput{
+    wide:Int
+    no_ball:Int
+    byes:Int
+}
+input TotalInput{
+    runs:Int
+    wickets:Int
+    over:Float
+}
+input BowlerScoreInput{
+    bowler:ID
+    wickets:Int
+    overs:Int
+    maiden:Int
+    runs:Int
+    wide:Int
+    no_ball:Int
+    econ:Float   
 }
 type RootQuery{
     players:[Player!]!

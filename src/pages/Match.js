@@ -12,7 +12,7 @@ import {
   getScorecardById,
   updateScorecard,
 } from "../services/scorecardservice";
-import {updateMatch} from "../services/matchservice";
+import { updateMatch } from "../services/matchservice";
 import { updateScoreOfPlayers } from "../services/playerservice";
 
 function Match({ matchData, player, team }) {
@@ -38,13 +38,12 @@ function Match({ matchData, player, team }) {
     params: { matchId },
   } = match;
 
-  console.log(matchId);
   const history = useHistory();
   // const [matchdata, setMatchData] = useState({
   //   // data: {},
   //   // update: 0,
   // });
-const [isMatchEnd,setMatchEnd] = useState();
+  const [isMatchEnd, setMatchEnd] = useState();
   const [modalStatus, setModalStatus] = useState({
     status: false,
     type: "",
@@ -69,6 +68,11 @@ const [isMatchEnd,setMatchEnd] = useState();
       });
   }, []);
 
+  const matchStartHandler = () => {
+    setModalStatus({ status: true, type: "init" });
+    scorecard.scorecard.matchStatus = "start";
+    setScorecard(scorecard);
+  };
   // useEffect(() => {
   //   let match = getMatchById(+matchId);
   //   match && setMatchData({ ...matchData, data: { ...match } });
@@ -125,7 +129,17 @@ const [isMatchEnd,setMatchEnd] = useState();
     ? MatchData?.team2
     : MatchData?.team1;
 
-  const striker = scorecard?.["scorecard"]?.[currentInning]?.striker;
+    console.log(currentPlayers);
+  const strikerValue = scorecard?.["scorecard"]?.[currentInning]?.batting?.scores?.filter((b) => b.batsmen._id == scorecard?.["scorecard"]?.[currentInning]?.striker);
+  const non_strikerValue = scorecard?.["scorecard"]?.[currentInning]?.batting?.scores.filter((b) => b.batsmen._id == scorecard?.["scorecard"]?.[currentInning]?.non_striker);
+  const bowlerValue = scorecard?.["scorecard"]?.[currentInning]?.bowling?.bowlerscores.filter((b) => b.bowler._id == scorecard?.["scorecard"]?.[currentInning]?.bowler_1);
+  
+  let striker = strikerValue && strikerValue[0];
+  let non_striker = non_strikerValue && non_strikerValue[0];
+  let bowler_1 = bowlerValue && bowlerValue[0];
+  console.log(strikerValue);
+  console.log(non_strikerValue);
+  console.log(bowlerValue);  
 
   const batsmanOptions = getPlayerListFromMatch(currentBattingTeam);
   const bowlerOptions = getPlayerListFromMatch(currentBowlingTeam);
@@ -159,15 +173,15 @@ const [isMatchEnd,setMatchEnd] = useState();
     let id = scorecardCopy.scorecard._id;
     let playersSwap = scorecardCopy.scorecard;
     setLoading(true);
-    updateScorecard(id, playersSwap)
-      .then((res) => {
-        console.log(res.data.data.updateScorecard);
-        setScorecard({ scorecard: res.data.data.updateScorecard });
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // updateScorecard(id, playersSwap)
+    //   .then((res) => {
+    //     console.log(res.data.data.updateScorecard);
+    //     setScorecard({ scorecard: res.data.data.updateScorecard });
+    //     setLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   };
 
   const retireBatsman = () => {
@@ -191,11 +205,11 @@ const [isMatchEnd,setMatchEnd] = useState();
   //   if()
   // }
   const submitEvent = (type, ball, value) => {
-    const scorecardCopy = JSON.parse(JSON.stringify(scorecard));
-    let Striker = scorecardCopy["scorecard"]?.[currentInning]?.["striker"];
-    let nonStriker =
-      scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"];
-    let bowler = scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"];
+    const scorecardCopy = scorecard;
+    // let Striker = scorecardCopy["scorecard"]?.[currentInning]?.["striker"];
+    // let nonStriker =
+    //   scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"];
+    // let bowler = scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"];
     if (type === "init") {
       scorecardCopy["scorecard"][currentInning]["striker"] =
         currentPlayers?.striker?.value;
@@ -224,16 +238,24 @@ const [isMatchEnd,setMatchEnd] = useState();
     if (type === "wicket") {
       scorecardCopy["scorecard"][currentInning].wickets =
         scorecardCopy["scorecard"][currentInning].wickets + 1;
-      scorecardCopy["scorecard"][currentInning]["bowler_1"].wickets =
-        scorecardCopy["scorecard"][currentInning]["bowler_1"].wickets + 1;
-      bowler = scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"];
-
-      scorecardCopy["scorecard"][currentInning]["striker"] =
+        bowler_1.wickets = bowler_1?.wickets+1;
+    //   scorecardCopy["scorecard"][currentInning]["bowler_1"].wickets =
+    //     scorecardCopy["scorecard"][currentInning]["bowler_1"].wickets + 1;
+    //  // bowler = scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"];
+        let totlalBall = scorecardCopy["scorecard"]?.[currentInning]?.["current_ball"];
+        let totlalover = scorecardCopy["scorecard"]?.[currentInning]?.["current_over"];
+        scorecardCopy["scorecard"][currentInning]["striker"] =
         currentPlayers?.new_batsmen?.value;
-      scorecardCopy["scorecard"][currentInning]["non_striker"] =
-        scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
-      scorecardCopy["scorecard"][currentInning]["bowler_1"] =
-        scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"]?._id;
+        scorecardCopy["scorecard"][currentInning]["batting"].total.wickets =
+        scorecardCopy["scorecard"]?.[currentInning]?.["batting"]?.total?.wickets + 1; 
+        scorecardCopy["scorecard"][currentInning]["batting"]["total"]["over"] = +`${totlalover}.${totlalBall}`;
+        striker["out_by"] = `${currentPlayers?.dismissal_type?.label} by ${currentPlayers?.bowler_1.label} bowler ${bowler_1?.bowler?.name} `;
+       console.log(striker);
+      
+        // scorecardCopy["scorecard"][currentInning]["non_striker"] =
+      //   scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
+      // scorecardCopy["scorecard"][currentInning]["bowler_1"] =
+      //   scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"]?._id;
       setModalStatus({ status: false, type: "" });
     }
 
@@ -247,36 +269,40 @@ const [isMatchEnd,setMatchEnd] = useState();
         type: ball,
         value,
       };
+      // if (currentball === 5) {
+      //   scorecardCopy["scorecard"][currentInning]["balls"] = {
+      //     type: "",
+      //     value: 0,
+      //   };
+      // } else {
+      //   balls.push(ballObj);
+      //   scorecardCopy["scorecard"][currentInning]["balls"] = balls;
+      // }
 
-      if (currentball === 5) {
-        scorecardCopy["scorecard"][currentInning]["balls"] = {
-          type: "",
-          value: 0,
-        };
-      } else {
-        balls.push(ballObj);
-        scorecardCopy["scorecard"][currentInning]["balls"] = balls;
-      }
-
-      if (currentball === 5) {
+      if (currentball === 6) {
         scorecardCopy["scorecard"][currentInning]["current_ball"] = 0;
         scorecardCopy["scorecard"][currentInning]["current_over"] =
           currentover + 1;
-        scorecardCopy["scorecard"][currentInning].bowler_1.overs =
-          scorecardCopy["scorecard"][currentInning].bowler_1.overs + 1;
-        bowler =
-          scorecardCopy["scorecard"][currentInning].bowler_1 &&
-          scorecardCopy["scorecard"][currentInning]["bowler_1"];
-
-        scorecardCopy["scorecard"][currentInning]["striker"] =
-          scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?._id;
-        scorecardCopy["scorecard"][currentInning]["non_striker"] =
-          scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
-        scorecardCopy["scorecard"][currentInning]["bowler_1"] =
+          scorecardCopy["scorecard"][currentInning]["balls"] = [{type: "",value: 0}];
+          bowler_1.overs = bowler_1?.overs + 1;
+          scorecardCopy["scorecard"][currentInning]["bowler_1"] =
           currentPlayers?.bowler_1?.value;
+          // scorecardCopy["scorecard"][currentInning].bowler_1.overs =
+        //   scorecardCopy["scorecard"][currentInning].bowler_1.overs + 1;
+        // bowler =
+        //   scorecardCopy["scorecard"][currentInning].bowler_1 &&
+        //   scorecardCopy["scorecard"][currentInning]["bowler_1"];
+        // scorecardCopy["scorecard"][currentInning]["striker"] =
+        //   scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?._id;
+        // scorecardCopy["scorecard"][currentInning]["non_striker"] =
+        //   scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
+        // scorecardCopy["scorecard"][currentInning]["bowler_1"] =
+        //   currentPlayers?.bowler_1?.value;
       } else {
         scorecardCopy["scorecard"][currentInning]["current_ball"] =
           currentball + 1;
+          balls.push(ballObj);
+        scorecardCopy["scorecard"][currentInning]["balls"] = balls;
         //     matchdata = {
         //       ...matchdata,
         //       data: {
@@ -284,58 +310,86 @@ const [isMatchEnd,setMatchEnd] = useState();
         //         scorecard,
         //       },
         //       update: matchdata.update + 1,
-        //     };
-
-        let run = scorecardCopy?.["scorecard"]?.[currentInning]?.["runs"];
-        let currentBall =
-          scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["balls"];
-
+        //     };   
+        let playerRun = striker?.runs;
+        let currentBall = striker?.balls;
+        let bowlRun = bowler_1?.runs;
+         let run = scorecardCopy?.["scorecard"]?.[currentInning]?.["runs"];
+        let totlalBall = scorecardCopy["scorecard"]?.[currentInning]?.["current_ball"];
+        let totlalover = scorecardCopy["scorecard"]?.[currentInning]?.["current_over"];
+         // let currentBall =
+        //   scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["balls"];
         if (ball === "Run") {
-          scorecardCopy["scorecard"][currentInning]["runs"] =
-            run + ballObj.value;
-          scorecardCopy["scorecard"][currentInning]["striker"]["run"] =
-            scorecardCopy?.["scorecard"]?.[currentInning]?.["striker"]?.[
-              "run"
-            ] + ballObj.value;
-          Striker =
-            scorecardCopy["scorecard"]?.[currentInning]?.["striker"] &&
-            scorecardCopy["scorecard"]?.[currentInning]?.["striker"];
-
-          scorecardCopy["scorecard"][currentInning]["striker"]["balls"] =
-            currentBall + 1;
-          scorecardCopy["scorecard"][currentInning]["bowler_1"].bowl_runs =
-            scorecardCopy["scorecard"][currentInning]["bowler_1"].bowl_runs +
-            ballObj.value;
-          bowler =
-            scorecardCopy["scorecard"][currentInning]["bowler_1"] &&
-            scorecardCopy["scorecard"][currentInning]["bowler_1"];
+           scorecardCopy["scorecard"][currentInning]["runs"] = run + ballObj.value;
+           striker.runs = playerRun + ballObj.value;
+          striker.balls = currentBall + 1;
+          bowler_1.runs = bowlRun + ballObj.value;
+          non_striker.runs = non_striker?.runs;
+          scorecardCopy["scorecard"][currentInning]["batting"]["total"]["runs"] =
+          scorecardCopy["scorecard"][currentInning]["batting"]["total"]["runs"] + ballObj.value; 
+          scorecardCopy["scorecard"][currentInning]["batting"]["total"]["over"] = `${totlalover}.${totlalBall}`; 
+          // scorecardCopy["scorecard"][currentInning]["striker"]["run"] =
+          //   scorecardCopy?.["scorecard"]?.[currentInning]?.["striker"]?.[
+          //     "run"
+          //   ] + ballObj.value;
+          // Striker =
+          //   scorecardCopy["scorecard"]?.[currentInning]?.["striker"] &&
+          //   scorecardCopy["scorecard"]?.[currentInning]?.["striker"]
+          // scorecardCopy["scorecard"][currentInning]["striker"]["balls"] =
+          //   currentBall + 1;
+          // scorecardCopy["scorecard"][currentInning]["bowler_1"].bowl_runs =
+          //   scorecardCopy["scorecard"][currentInning]["bowler_1"].bowl_runs +
+          //   ballObj.value;
+          // bowler =
+          //   scorecardCopy["scorecard"][currentInning]["bowler_1"] &&
+          //   scorecardCopy["scorecard"][currentInning]["bowler_1"  
         }
-        if (ballObj.value === 1 || ballObj.value === 3 || ballObj.value === 5) {
-          let swap = scorecardCopy["scorecard"][currentInning].striker;
-          scorecardCopy["scorecard"][currentInning].striker =
-            scorecardCopy["scorecard"][currentInning].non_striker;
+        if (ballObj.value === 1|| ballObj.value === 3 || ballObj.value === 5) {
+          let swap = scorecardCopy["scorecard"]?.[currentInning]?.striker;  
+          scorecardCopy["scorecard"][currentInning].striker = scorecardCopy["scorecard"]?.[currentInning]?.non_striker;
           scorecardCopy["scorecard"][currentInning].non_striker = swap;
+            // scorecardCopy["scorecard"][currentInning].striker =
+          //   scorecardCopy["scorecard"][currentInning].non_striker;
+          //scorecardCopy["scorecard"][currentInning].non_striker = swap;
+          
         }
 
         if (ballObj.value === 4) {
-          scorecardCopy["scorecard"][currentInning].striker.fours =
-            scorecardCopy["scorecard"][currentInning].striker.fours + 1;
-          Striker =
-            scorecardCopy["scorecard"][currentInning].striker &&
-            scorecardCopy["scorecard"][currentInning].striker;
+          striker.four = striker.four + 1;
+          // scorecardCopy["scorecard"][currentInning].striker.fours =
+          //   scorecardCopy["scorecard"][currentInning].striker.fours + 1;
+          // Striker =
+          //   scorecardCopy["scorecard"][currentInning].striker &&
+          //   scorecardCopy["scorecard"][currentInning].striker;
         }
         if (ballObj.value === 6) {
-          scorecardCopy["scorecard"][currentInning].striker.sixes =
-            scorecardCopy["scorecard"][currentInning].striker.sixes + 1;
-          Striker =
-            scorecardCopy["scorecard"][currentInning].striker &&
-            scorecardCopy["scorecard"][currentInning].striker;
+          striker.six = striker.six + 1;
+          // scorecardCopy["scorecard"][currentInning].striker.sixes =
+          //   scorecardCopy["scorecard"][currentInning].striker.sixes + 1;
+          // Striker =
+          //   scorecardCopy["scorecard"][currentInning].striker &&
+          //   scorecardCopy["scorecard"][currentInning].striker;
         }
-        if (ball === "Wd" || ball === "Nb" || ball === "B" || ball === "LB") {
+        if (ball === "Wd")  {
+          scorecardCopy["scorecard"][currentInning]["runs"] = run + ballObj.value;
+            scorecardCopy["scorecard"][currentInning]["batting"]["total"]["runs"] = run + ballObj.value;
+            scorecardCopy["scorecard"][currentInning]["batting"]["extras"]["wide"] = scorecardCopy["scorecard"][currentInning]["batting"]["extras"]["wide"] + ballObj.value;
+            bowler_1.wide = bowler_1?.wide + ballObj.value;
+        }
+        if (ball === "Nb")  {
           scorecardCopy["scorecard"][currentInning]["runs"] =
             run + ballObj.value;
+            scorecardCopy["scorecard"][currentInning]["batting"]["total"]["runs"] = run + ballObj.value;
+            scorecardCopy["scorecard"][currentInning]["batting"]["extras"]["no_ball"] = scorecardCopy["scorecard"][currentInning]["batting"]["extras"]["no_ball"] + ballObj.value;
+            bowler_1.no_ball = bowler_1?.no_ball + ballObj.value;
         }
-
+        if (ball === "B"|| ball === "LB")  {
+          scorecardCopy["scorecard"][currentInning]["runs"] =
+            run + ballObj.value;
+            scorecardCopy["scorecard"][currentInning]["batting"]["total"]["runs"] = run + ballObj.value;
+            scorecardCopy["scorecard"][currentInning]["batting"]["extras"]["byes"] = scorecardCopy["scorecard"][currentInning]["batting"]["extras"]["byes"] + ballObj.value;
+            bowler_1.byes = bowler_1?.byes + ballObj.value;
+        }
         if (currentInning === "innings1") {
           if (
             scorecardCopy["scorecard"][currentInning]["current_over"] ===
@@ -345,13 +399,8 @@ const [isMatchEnd,setMatchEnd] = useState();
           ) {
             scorecardCopy["scorecard"][currentInning]["end"] = true;
             scorecardCopy["scorecard"]["innings1"].target =
-              scorecardCopy["scorecard"].innings1.runs;
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalRuns"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalRuns"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalRuns"];
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalBalls"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalWickets"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalBalls"];
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalFours"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalFours"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalFours"];
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalSixes"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalSixes"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalSixes"];
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalWickets"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalWickets"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalWickets"];
-            }
+              scorecardCopy["scorecard"].innings1.runs;  
+          }
         }
         if (currentInning === "innings2") {
           if (
@@ -362,63 +411,84 @@ const [isMatchEnd,setMatchEnd] = useState();
             batsmanOptions.length ===
               scorecardCopy["scorecard"][currentInning].wickets
           ) {
-            scorecardCopy["scorecard"][currentInning]["striker"]["totalRuns"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalRuns"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalRuns"];
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalBalls"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalBalls"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalBalls"];
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalFours"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalFours"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalFours"];
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalSixes"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalSixes"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalSixes"];
-              scorecardCopy["scorecard"][currentInning]["striker"]["totalWickets"] = scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalWickets"] + scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?.["totalWickets"];
             scorecardCopy["scorecard"][currentInning]["end"] = true;
             scorecardCopy["scorecard"].matchStatus = "end";
           }
         }
-        nonStriker =
-          scorecardCopy["scorecard"][currentInning]["non_striker"] &&
-          scorecardCopy["scorecard"][currentInning]["non_striker"];
-        scorecardCopy["scorecard"][currentInning]["striker"] =
-          scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?._id;
-        scorecardCopy["scorecard"][currentInning]["non_striker"] =
-          scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
-        scorecardCopy["scorecard"][currentInning]["bowler_1"] =
-          scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"]?._id;
+                // scorecardCopy["scorecard"][currentInning]["striker"] =
+        //   scorecardCopy["scorecard"]?.[currentInning]?.["striker"]?._id;
+        // scorecardCopy["scorecard"][currentInning]["non_striker"] =
+        //   scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
+        // scorecardCopy["scorecard"][currentInning]["bowler_1"] =
+        //   scorecardCopy["scorecard"]?.[currentInning]?.["bowler_1"]?._id;
       }
 
       setModalStatus({ status: false, type: "" });
     }
-
+    console.log(scorecard.scorecard);
     if (type === "retire") {
       scorecardCopy["scorecard"][currentInning]["striker"] =
         currentPlayers.new_batsmen.value;
       setModalStatus({ status: false, type: "" });
     }
+    setScorecard(scorecardCopy); 
+  //   let batting_1Scores = scorecardCopy["scorecard"]?.[currentInning]?.["batting"]?.scores.map(s=>{return {
+  //       ...s,
+  //       batsmen:s.batsmen._id
+  //   }});
+  //   console.log(batting_1Scores);
+  //   let batting_2Scores = scorecardCopy["scorecard"]?.[otherInning]?.["batting"]?.scores.map(s=>{return {
+  //       ...s,
+  //       batsmen:s.batsmen._id
+  //   }});
+  //   console.log(batting_2Scores);
+  //   let bowling_1Scores = scorecardCopy["scorecard"]?.[currentInning]?.["bowling"]?.bowlerscores.map(s=>{return {
+  //     ...s,
+  //     bowler:s.bowler._id
+  //   }});
+  //   console.log(bowling_1Scores);
+  //   let bowling_2Scores = scorecardCopy["scorecard"]?.[otherInning]?.["bowling"]?.bowlerscores.map(s=>{return {
+  //     ...s,
+  //     bowler:s.bowler._id
+  //   }});
+  //   console.log(bowling_2Scores);
 
-    let update = scorecardCopy.scorecard;
-    let Id = scorecardCopy.scorecard._id;
-    update[otherInning].striker = update[otherInning]?.striker?._id;
-    update[otherInning].non_striker = update[otherInning]?.non_striker?._id;
-    update[otherInning].bowler_1 = update[otherInning]?.bowler_1?._id;
+  //      let update = scorecardCopy.scorecard;
+  //      let Id = scorecardCopy.scorecard._id;
+  //       update[otherInning]["batting"] = batting_2Scores;
+  //       update[currentInning]["batting"] = batting_1Scores;
+  //       update[otherInning]["bowling"] = bowling_2Scores;
+  //       update[currentInning]["bowling"] = bowling_2Scores;
+  //     update[otherInning].striker = update[otherInning]?.striker;
+  //     update[otherInning].non_striker = update[otherInning]?.non_striker;
+  //     update[otherInning].bowler_1 = update[otherInning]?.bowler_1;
 
-    update[currentInning].striker = update[currentInning].striker;
-    update[currentInning].non_striker = update[currentInning].non_striker;
-    update[currentInning].bowler_1 = update[currentInning].bowler_1;
+  //     update[currentInning].striker = update[currentInning].striker;
+  //     update[currentInning].non_striker = update[currentInning].non_striker;
+  //     update[currentInning].bowler_1 = update[currentInning].bowler_1;
 
-    setLoading(true);
-    updateScoreOfPlayers(Striker, nonStriker, bowler, update)
-      .then((res) => {
-        console.log(res.data.data);
-        setScorecard({ scorecard: res.data.data.updatedScorecard });
-        setLoading(false);
-      })
-      .catch((err) => console.log(err));
-  };
+  //     setLoading(true);
+  //     updateScorecard(Id,update)
+  //       .then((res) => {
+  //         console.log(res.data.data);
+  //         setScorecard({ scorecard: res.data.data.updatedScorecard });
+  //         setLoading(false);
+  //       })
+  //       .catch((err) => console.log(err));
+   };
   winner = currentBattingTeam?.name;
   if (scorecard?.scorecard?.matchStatus === "end") {
     const Id = MatchData?._id;
-    updateMatch(Id,winner)
-    .then(res=>{console.log(res)})
-    .catch(err=>{console.log(err)})
+    updateMatch(Id, winner)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     redirectTo("/winner");
   }
-  console.log(scorecard);
+  //console.log(scorecard);
   let totalBalls = MatchData?.overs * 6;
   return (
     <React.Fragment>
@@ -443,14 +513,14 @@ const [isMatchEnd,setMatchEnd] = useState();
             <div className="d-flex align-items-center">
               <div className="mr-3">{currentBattingTeam?.name}</div>
               <div className="h1 mr-3">
-                {scorecard?.["scorecard"]?.[currentInning]?.["runs"] || "0"} -
-                {scorecard?.["scorecard"]?.[currentInning]?.["wickets"] || "0"}
+                {scorecard?.["scorecard"]?.[currentInning]?.["batting"]?.["total"]?.["runs"] || "0"} -
+                {scorecard?.["scorecard"]?.[currentInning]?.["batting"]?.["total"]?.["wickets"] || "0"}
               </div>
               <div className="mr-2 pr-2">
                 (
-                {scorecard?.["scorecard"]?.[currentInning]?.current_over || "0"}
-                .
-                {scorecard?.["scorecard"]?.[currentInning]?.current_ball || "0"}{" "}
+                {scorecard?.["scorecard"]?.[currentInning]?.["batting"]?.["total"]?.["over"] || "0"}
+                {//scorecard?.["scorecard"]?.[currentInning]?.current_ball || "0"
+                }{" "}
                 Overs)
               </div>
               {!firstInnings && (
@@ -469,119 +539,79 @@ const [isMatchEnd,setMatchEnd] = useState();
               </div>
             )}
           </div>
+          {scorecard?.scorecard?.matchStatus === "notStart" ? (
+            <div class="text-center">
+              <button class="btn btn-primary" onClick={matchStartHandler}>
+                Start match
+              </button>
+            </div>
+          ) : (
+            <div>
+              <div className="p-1 mb-1">
+                {/* <p className='font-weight-bold'>Batting</p> */}
+                <div className="d-flex smaller justify-content-between border-bottom text-center pb-1">
+                  <div className="flex-3 text-left">Batsmen</div>
+                  <div className="flex-1">Runs</div>
+                  <div className="flex-1">Balls</div>
+                  <div className="flex-1">4's</div>
+                  <div className="flex-1">6's</div>
+                  <div className="flex-1">S.Rate</div>
+                </div>
 
-          <div className="p-1 mb-1">
-            {/* <p className='font-weight-bold'>Batting</p> */}
-            <div className="d-flex smaller justify-content-between border-bottom text-center pb-1">
-              <div className="flex-3 text-left">Batsmen</div>
-              <div className="flex-1">Runs</div>
-              <div className="flex-1">Balls</div>
-              <div className="flex-1">4's</div>
-              <div className="flex-1">6's</div>
-              <div className="flex-1">S.Rate</div>
-            </div>
-
-            <div className="d-flex small justify-content-between text-center pt-1">
-              <React.Fragment>
-                <div className="flex-3 text-left">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["striker"]?.[
-                    "name"
-                  ] || "-"}
-                  *
+                <div className="d-flex small justify-content-between text-center pt-1">
+                  <React.Fragment>
+                    <div className="flex-3 text-left">
+                      {striker?.batsmen?.name || "-"}*
+                    </div>
+                    <div className="flex-1">{striker?.["runs"] || "0"}</div>
+                    <div className="flex-1">{striker?.["balls"] || "0"}</div>
+                    <div className="flex-1">{striker?.["four"] || "0"}</div>
+                    <div className="flex-1">{striker?.["six"] || "0"}</div>
+                    <div className="flex-1">{striker?.["st_rate"] || "0"}</div>
+                  </React.Fragment>
                 </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["striker"]?.[
-                    "run"
-                  ] || "0"}
+                <div className="d-flex small justify-content-between text-center pt-1">
+                  <React.Fragment>
+                    <div className="flex-3 text-left">
+                      {non_striker?.batsmen?.name || "-"}
+                    </div>
+                    <div className="flex-1">{non_striker?.runs || "0"}</div>
+                    <div className="flex-1">
+                      {non_striker?.["balls"] || "0"}
+                    </div>
+                    <div className="flex-1">
+                      {non_striker?.["four"] || "0"}
+                    </div>
+                    <div className="flex-1">
+                      {non_striker?.["six"] || "0"}
+                    </div>
+                    <div className="flex-1">
+                      {non_striker?.["st_rate"] || "0"}
+                    </div>
+                  </React.Fragment>
                 </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["striker"]?.[
-                    "balls"
-                  ] || "0"}
-                </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["striker"]?.[
-                    "fours"
-                  ] || "0"}
-                </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["striker"]?.[
-                    "sixes"
-                  ] || "0"}
-                </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["striker"]?.[
-                    "st_rate"
-                  ] || "0"}
-                </div>
-              </React.Fragment>
-            </div>
-            <div className="d-flex small justify-content-between text-center pt-1">
-              <React.Fragment>
-                <div className="flex-3 text-left">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["non_striker"]
-                    ?.name || "-"}
-                </div>
-                <div className="flex-1">
-                  {
-                    scorecard?.["scorecard"]?.[currentInning]?.["non_striker"]
-                      ?.run
-                  }
-                </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["non_striker"]?.[
-                    "balls"
-                  ] || "0"}
-                </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["non_striker"]?.[
-                    "fours"
-                  ] || "0"}
-                </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["non_striker"]?.[
-                    "sixes"
-                  ] || "0"}
-                </div>
-                <div className="flex-1">
-                  {scorecard?.["scorecard"]?.[currentInning]?.["non_striker"]?.[
-                    "st_rate"
-                  ] || "0"}
-                </div>
-              </React.Fragment>
-            </div>
-          </div>
-          <div className="p-1">
-            {/* <p className='font-weight-bold'>Bowling</p> */}
-            <div className="d-flex smaller justify-content-between border-bottom text-center pb-1">
-              <div className="flex-3 text-left">Bowler</div>
-              <div className="flex-1">Overs</div>
-              <div className="flex-1">Runs</div>
-              <div className="flex-1">Wkts</div>
-              <div className="flex-1">Econ</div>
-              <div className="flex-1">Extras</div>
-            </div>
-            <div className="d-flex small justify-content-between text-center pt-1">
-              <div className="flex-3 text-left">
-                {scorecard?.["scorecard"]?.[currentInning]?.["bowler_1"]
-                  ?.name || "-"}
               </div>
-              <div className="flex-1">
-                {scorecard?.["scorecard"]?.[currentInning]?.["bowler_1"]
-                  ?.overs || "0"}
-              </div>
-              <div className="flex-1">
-                {scorecard?.["scorecard"]?.[currentInning]?.["bowler_1"]
-                  ?.bowl_runs || "0"}
-              </div>
-              <div className="flex-1">
-                {scorecard?.["scorecard"]?.[currentInning]?.["bowler_1"]
-                  ?.wickets || "0"}
-              </div>
-              <div className="flex-1">{/*bowler_1?.sixes || "-"*/}-</div>
-              <div className="flex-1">{/*bowler_1?.srate || "-"*/}-</div>
-            </div>
-            {/*<div className="d-flex small justify-content-between text-center pt-1">
+              <div className="p-1">
+                {/* <p className='font-weight-bold'>Bowling</p> */}
+                <div className="d-flex smaller justify-content-between border-bottom text-center pb-1">
+                  <div className="flex-3 text-left">Bowler</div>
+                  <div className="flex-1">Overs</div>
+                  <div className="flex-1">Runs</div>
+                  <div className="flex-1">Wkts</div>
+                  <div className="flex-1">Econ</div>
+                  <div className="flex-1">Extras</div>
+                </div>
+                <div className="d-flex small justify-content-between text-center pt-1">
+                  <div className="flex-3 text-left">
+                    {bowler_1?.bowler?.name || "-"}
+                  </div>
+                  <div className="flex-1">{bowler_1?.overs || "0"}</div>
+                  <div className="flex-1">{bowler_1?.runs || "0"}</div>
+                  <div className="flex-1">{bowler_1?.wickets || "0"}</div>
+                  <div className="flex-1">{bowler_1?.econ || "0"}</div>
+                  <div className="flex-1">{/*bowler_1?. || "0"*/}0</div>
+                </div>
+                {/*<div className="d-flex small justify-content-between text-center pt-1">
                 <div className="flex-3 text-left">
                   bowler_2?.name || "-" kholi
                 </div>
@@ -591,118 +621,120 @@ const [isMatchEnd,setMatchEnd] = useState();
                 <div className="flex-1">bowler_2?.sixes || "-"-</div>
                 <div className="flex-1">bowler_2?.srate || "-"-</div>
               </div>*/}
-          </div>
-          <div className="p-1 mt-2">
-            <div className="d-flex smaller align-items-center">
-              <div className="mr-2">This Over: </div>
-
-              <div className="d-flex match-over">
-                {balls &&
-                  balls.map((ball) => {
-                    return (
-                      <BallEle
-                        {...ball}
-                        className="border-danger bg-danger text-white font-weight-bold"
-                      />
-                    );
-                  })}
               </div>
-            </div>
-          </div>
-          <div className="p-1 mt-1 border-bottom mt-2">
-            <div
-              className="d-flex align-items-center  border-bottom pb-2 justify-content-center"
-              style={{ height: "4rem" }}
-            >
-              <button
-                onClick={() => handleEvent({ ball: "Run", striker })}
-                type="button"
-                class="btn btn-lg btn-outline-primary smaller pl-2 pr-2 mr-2"
-              >
-                Run
-              </button>
-              <button
-                onClick={() => handleEvent({ ball: "Wd", striker })}
-                type="button"
-                class="btn btn-lg btn-outline-primary smaller pl-2 pr-2 mr-2"
-              >
-                Wide
-              </button>
-              <button
-                onClick={() => handleEvent({ ball: "Nb", striker })}
-                type="button"
-                class="btn btn-lg btn-outline-primary smaller pl-2 pr-2 mr-2"
-              >
-                No Ball
-              </button>
-              <button
-                onClick={() => handleEvent({ ball: "w", striker })}
-                type="button"
-                class="btn btn-lg btn-outline-danger smaller pl-2 pr-2 mr-2"
-              >
-                Wicket
-              </button>
-              <button
-                onClick={() => handleEvent({ ball: "B", striker })}
-                type="button"
-                class="btn btn-lg btn-outline-danger smaller pl-2 pr-2 mr-2"
-              >
-                Byes
-              </button>
-              <button
-                onClick={() => handleEvent({ ball: "LB", striker })}
-                type="button"
-                class="btn btn-lg btn-outline-danger smaller pl-2 pr-2 mr-2"
-              >
-                Leg Byes
-              </button>
-            </div>
+              <div className="p-1 mt-2">
+                <div className="d-flex smaller align-items-center">
+                  <div className="mr-2">This Over: </div>
 
-            <div
-              className="d-flex align-items-center"
-              style={{ height: "4rem" }}
-            >
-              <div className="flex-1 text-center border-right">
-                <img
-                  alt=""
-                  src={undo}
-                  width="40px"
-                  height="30px"
-                  className="mr-2"
-                  style={{ transform: "scaleX(-1)" }}
-                />
-                <p className="small mb-1">Undo</p>
-              </div>
-              <div className="flex-2 border-right">
-                <div className="d-flex align-items-center mt-2 pb-2 justify-content-center">
-                  <button
-                    type="button"
-                    class="btn btn-outline-primary smaller pl-2 pr-2 mr-2"
-                    onClick={swappingBatsmen}
-                  >
-                    Swap Batsman
-                  </button>
-                  <button
-                    type="button"
-                    onClick={retireBatsman}
-                    class="btn btn-outline-primary smaller pl-2 pr-2 mr-2"
-                  >
-                    Retire
-                  </button>
+                  <div className="d-flex match-over">
+                    {balls &&
+                      balls.map((ball) => {
+                        return (
+                          <BallEle
+                            {...ball}
+                            className="border-danger bg-danger text-white font-weight-bold"
+                          />
+                        );
+                      })}
+                  </div>
                 </div>
               </div>
-              <div className="flex-1 text-center">
-                <img
-                  alt=""
-                  src={undo}
-                  width="40px"
-                  height="30px"
-                  className="mr-2"
-                />
-                <p className="small mb-1">Redo</p>
+              <div className="p-1 mt-1 border-bottom mt-2">
+                <div
+                  className="d-flex align-items-center  border-bottom pb-2 justify-content-center"
+                  style={{ height: "4rem" }}
+                >
+                  <button
+                    onClick={() => handleEvent({ ball: "Run", striker })}
+                    type="button"
+                    class="btn btn-lg btn-outline-primary smaller pl-2 pr-2 mr-2"
+                  >
+                    Run
+                  </button>
+                  <button
+                    onClick={() => handleEvent({ ball: "Wd", striker })}
+                    type="button"
+                    class="btn btn-lg btn-outline-primary smaller pl-2 pr-2 mr-2"
+                  >
+                    Wide
+                  </button>
+                  <button
+                    onClick={() => handleEvent({ ball: "Nb", striker })}
+                    type="button"
+                    class="btn btn-lg btn-outline-primary smaller pl-2 pr-2 mr-2"
+                  >
+                    No Ball
+                  </button>
+                  <button
+                    onClick={() => handleEvent({ ball: "w", striker })}
+                    type="button"
+                    class="btn btn-lg btn-outline-danger smaller pl-2 pr-2 mr-2"
+                  >
+                    Wicket
+                  </button>
+                  <button
+                    onClick={() => handleEvent({ ball: "B", striker })}
+                    type="button"
+                    class="btn btn-lg btn-outline-danger smaller pl-2 pr-2 mr-2"
+                  >
+                    Byes
+                  </button>
+                  <button
+                    onClick={() => handleEvent({ ball: "LB", striker })}
+                    type="button"
+                    class="btn btn-lg btn-outline-danger smaller pl-2 pr-2 mr-2"
+                  >
+                    Leg Byes
+                  </button>
+                </div>
+
+                <div
+                  className="d-flex align-items-center"
+                  style={{ height: "4rem" }}
+                >
+                  <div className="flex-1 text-center border-right">
+                    <img
+                      alt=""
+                      src={undo}
+                      width="40px"
+                      height="30px"
+                      className="mr-2"
+                      style={{ transform: "scaleX(-1)" }}
+                    />
+                    <p className="small mb-1">Undo</p>
+                  </div>
+                  <div className="flex-2 border-right">
+                    <div className="d-flex align-items-center mt-2 pb-2 justify-content-center">
+                      <button
+                        type="button"
+                        class="btn btn-outline-primary smaller pl-2 pr-2 mr-2"
+                        onClick={swappingBatsmen}
+                      >
+                        Swap Batsman
+                      </button>
+                      <button
+                        type="button"
+                        onClick={retireBatsman}
+                        class="btn btn-outline-primary smaller pl-2 pr-2 mr-2"
+                      >
+                        Retire
+                      </button>
+                    </div>
+                  </div>
+                  <div className="flex-1 text-center">
+                    <img
+                      alt=""
+                      src={undo}
+                      width="40px"
+                      height="30px"
+                      className="mr-2"
+                    />
+                    <p className="small mb-1">Redo</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -783,7 +815,7 @@ const [isMatchEnd,setMatchEnd] = useState();
                 </div>
               </React.Fragment>
             )}
-            {scorecard?.["scorecard"]?.[currentInning]?.current_ball === 5 && (
+            {scorecard?.["scorecard"]?.[currentInning]?.current_ball === 6 && (
               <div className="p-2">
                 <p>
                   <b>Bowler</b>
@@ -821,7 +853,7 @@ const [isMatchEnd,setMatchEnd] = useState();
                 {
                   <div className="p-2">
                     <p>
-                      <b>Dismissal caused by ?</b>
+                      <b>who helped ?</b>
                     </p>
                     <SingleSelect
                       name={"players"}

@@ -12,7 +12,7 @@ import Auth from "../context/auth-context";
 import { CreateMatch } from "../services/matchservice";
 import { getTeam } from "../services/teamservice";
 import Loader from "../Components/Common/Loader";
-import { createScorecard } from "../services/scorecardservice";
+import { createScorecard, updateScorecard } from "../services/scorecardservice";
 
 function AddMatch({ dispatch, team }) {
   const [match, setMatchForm] = useState({
@@ -34,38 +34,18 @@ function AddMatch({ dispatch, team }) {
   const redirectTo = (route) => {
     history.push(route);
   };
-  let scorecard = {
-    matchStatus: "start",
-    innings1: {
-      runs: 0,
-      wickets: 0,
-      current_over: 0,
-      current_ball: 0,
-      target: 0,
-      bowler_2: " ",
-      end: false,
-    },
-    innings2: {
-      runs: 0,
-      wickets: 0,
-      current_over: 0,
-      current_ball: 0,
-      target: 0,
-      bowler_2: " ",
-      end: false,
-    },
-  };
+
   const handleForm = (value, key) => {
     setMatchForm({ ...match, [key]: value });
-    if (key === "toss_won_by") {
-      createScorecard(scorecard)
-        .then((res) => {
-          console.log(res.data.data.createScorecard);
-          setscorecard(res.data.data.createScorecard);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    if(key === "batting_first"){
+      createScorecard(scorecardpayload)
+      .then((res) => {
+        console.log(res.data.data.createScorecard);
+        setscorecard(res.data.data.createScorecard);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     }
   };
 
@@ -88,14 +68,103 @@ function AddMatch({ dispatch, team }) {
       value: t._id,
     };
   });
+console.log(match?.batting_first)
+  const firstbatting = (match?.batting_first.label === match?.team_1.label) ? match?.team_1 : match?.team_2;
+  const teamfirstbat = teamsOption.filter((tm) => tm._id === firstbatting.value);
+  const battingTeam_1 = teamfirstbat[0];
+  const teamBattingPlayers1 = battingTeam_1?.players.map(p=>{
+    return {
+      batsmen:p._id
+    }
+  });
+console.log(match?.batting_first.label === match?.team_1.label)
+
+  console.log(teamBattingPlayers1);
+  const secondbatting = (firstbatting.label === match?.team_1.label) ? match?.team_2 : match?.team_1;
+  const teamSecondBat = teamsOption.filter((tm) => tm._id === secondbatting.value);
+  const battingTeam_2 = teamSecondBat[0];
+  const teamBattingPlayers2 = battingTeam_2?.players.map(p=>{
+    return {
+      batsmen:p._id
+    }
+  });
+  console.log(teamBattingPlayers2);
+
+  const firstbowling = (match?.batting_first.label === match?.team_1.label) ? match?.team_2 : match?.team_1;
+  const teamfirstbowl = teamsOption.filter((tm) => tm._id === firstbowling.value);
+  const bowlingTeam_1 = teamfirstbowl[0];
+  const teamBowlingPlayers1 = bowlingTeam_1?.players.map(p=>{
+    return {
+      bowler:p._id
+    }
+  });
+  console.log(teamBowlingPlayers1);
+  const secondbowling = (firstbowling.label === match?.team_1.label) ? match?.team_2 : match?.team_1;
+  const teamSecondBowl = teamsOption.filter((tm) => tm._id === secondbowling.value);
+  const bowlingTeam_2 = teamSecondBowl[0];
+  const teamBowlingPlayers2 = bowlingTeam_2?.players.map(p=>{
+    return {
+      bowler:p._id
+    }
+  });
+  console.log(teamBowlingPlayers2);
+
+let scorecardpayload = {
+  matchStatus: "notStart",
+  innings1: {
+    runs: 0,
+    wickets: 0,
+    current_over: 0,
+    current_ball: 0,
+    target: 0,
+    bowler_2: " ",
+    end: false,
+    batting:{
+      scores:teamBattingPlayers1,
+      total:{},
+      extras:{},
+    },
+    bowling:{
+      bowlerscores:teamBowlingPlayers1,
+    },
+  },
+  innings2: {
+    runs: 0,
+    wickets: 0,
+    current_over: 0,
+    current_ball: 0,
+    target: 0,
+    bowler_2: " ",
+    end: false,
+    batting:{
+      scores:teamBattingPlayers2,
+      total:{},
+      extras:{},
+    },
+    bowling:{
+      bowlerscores:teamBowlingPlayers2,
+    },
+  },
+};
+// createScorecard(scorecard)
+//     .then((res) => {
+//       console.log(res.data.data.createScorecard);
+//       setscorecard(res.data.data.createScorecard);
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+
+  console.log(teamsOption);
   // const getTeamById = (teamId) => {
   //   let team = teams.find((t) => t.id === teamId);
   //   return team;
   // };
   const createMatch = () => {
     // getData('matches');
-
     // if (!matches) matches = [];
+    let ScardId = scoreCard._id;
+    
     const date = moment();
     let matchvalue = {
       //  [`team_${match.team_1.value}`]: match.team_1.id,//getTeamById(match.team_1.value),
@@ -108,7 +177,7 @@ function AddMatch({ dispatch, team }) {
       date: date.format("DD/MM/YYYY"),
       teams: [match.team_1, match.team_2],
     };
-    console.log(date.format("DD/MM/YYYY"));
+
     let matches = [];
     matches.push({ ...matchvalue, id: matches.length + 1 });
     dispatch(addingmatch(matches));
@@ -122,6 +191,11 @@ function AddMatch({ dispatch, team }) {
       scorecard: scoreCard?._id,
       token: context.token,
     };
+
+    updateScorecard(ScardId,scorecardpayload)
+    .then(res=>console.log(res))
+    .catch(err=>console.log(err))
+
     setloading(true);
     CreateMatch(matchData)
       .then((res) => {
@@ -144,7 +218,7 @@ function AddMatch({ dispatch, team }) {
   const team2_validation = match.team_1 === "";
   const toss_won_by_validation = match.team_1 === "" || match.team_2 === "";
   const batting_first_validation = match.toss_won_by === "";
-
+  
   return (
     <React.Fragment>
       <div className="add-players-wrapper full-height">
