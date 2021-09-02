@@ -236,6 +236,10 @@ function Match({ matchData, player, team }) {
     }
 
     if (type === "wicket") {
+      let ballObj = {
+        type: ball,
+        value,
+      };
       scorecardCopy["scorecard"][currentInning].wickets =
         scorecardCopy["scorecard"][currentInning].wickets + 1;
         bowler_1.wickets = bowler_1?.wickets+1;
@@ -250,8 +254,11 @@ function Match({ matchData, player, team }) {
         scorecardCopy["scorecard"]?.[currentInning]?.["batting"]?.total?.wickets + 1; 
         scorecardCopy["scorecard"][currentInning]["batting"]["total"]["over"] = +`${totlalover}.${totlalBall}`;
         striker["out_by"] = `${currentPlayers?.dismissal_type?.label} by ${currentPlayers?.bowler_1.label} bowler ${bowler_1?.bowler?.name} `;
-       console.log(striker);
-      
+        
+        scorecardCopy["scorecard"][currentInning]["current_ball"] =
+        scorecardCopy?.["scorecard"]?.[currentInning]?.["current_ball"] + 1;
+        balls.push(ballObj);
+      scorecardCopy["scorecard"][currentInning]["balls"] = balls;
         // scorecardCopy["scorecard"][currentInning]["non_striker"] =
       //   scorecardCopy["scorecard"]?.[currentInning]?.["non_striker"]?._id;
       // scorecardCopy["scorecard"][currentInning]["bowler_1"] =
