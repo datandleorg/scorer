@@ -13,12 +13,6 @@ type Player {
     overs:Int
     fours:Int
     sixes:Int
-    totalRuns:Int
-    totalWickets:Int
-    totalBalls:Int
-    totalOvers:Int
-    totalFours:Int
-    totalSixes:Int 
     thirty:Int
     fifty:Int
     avg:Int
@@ -79,7 +73,7 @@ type Score{
     two:Int
     four:Int
     six:Int
-    st_rate:Int
+    st_rate:Float
     out_by:String
 }
 type Extras{
@@ -147,12 +141,6 @@ input PlayerInput{
     overs:Int
     fours:Int
     sixes:Int
-    totalRuns:Int
-    totalWickets:Int
-    totalBalls:Int
-    totalOvers:Int
-    totalFours:Int
-    totalSixes:Int    
     thirty:Int
     fifty:Int
     avg:Int
@@ -212,7 +200,7 @@ input ScoreInput{
     two:Int
     four:Int
     six:Int
-    st_rate:Int
+    st_rate:Float
     out_by:String
 }
 input ExtrasInput{
@@ -255,7 +243,7 @@ type RootMutation{
     createInnings(inningsInput:InningsInput):Innings
     createScorecard(matchStatus:String,innings1:InningsInput,innings2:InningsInput):Scorecard
     updateScorecard(scorecardId:ID,matchStatus:String,innings1:InningsInput,innings2:InningsInput):Scorecard
-    updatePlayer(playerId:ID,name:String,run:Int,balls:Int,fours:Int,sixes:Int,overs:Int,bowl_runs:Int,wickets:Int,totalRuns:Int,totalWickets:Int,totalBalls:Int,totalWickets:Int,totalFours:Int,totalSixes:Int):Player
+    updatePlayer(playerId:ID,name:String,run:Int,balls:Int,fours:Int,sixes:Int,overs:Int,bowl_runs:Int,wickets:Int):Player
     updateTeam(teamId:ID,name:String,matches:Int,won:Int,loss:Int,tie:Int):Team
     updateMatch(matchId:ID,matchWonby:String):Match
     addPlayerToTeam(teamId:ID!,playerId:ID!):Team

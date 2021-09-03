@@ -29,22 +29,7 @@ const playersSchema = new Schema({
   totalRuns: {
     type: Number,
   },
-  totalBalls: {
-    type: Number,
-  },
-  totalFours: {
-    type: Number,
-  },
-  totalSixes: {
-    type: Number,
-  },
-  totalOvers: {
-    type: Number,
-  },
-  totalWickets: {
-    type: Number,
-  },
-  fours: {
+   fours: {
     type: Number,
   },
   sixes: {

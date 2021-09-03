@@ -98,6 +98,7 @@ export const GetMatchById = (matchId) => {
                      _id
                      name
                      score
+                     image
                      players{
                        _id
                        name
@@ -115,6 +116,7 @@ export const GetMatchById = (matchId) => {
                      _id
                      name
                      score
+                     image
                      players{
                       _id
                       name

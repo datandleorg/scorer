@@ -55,12 +55,6 @@ export const getPlayerData = () => {
               run
               overs
               matches
-              totalWickets
-              totalBalls
-              totalOvers
-              totalFours
-              totalSixes 
-              wickets
               st_rate
               bowl_runs
               avg
@@ -89,13 +83,7 @@ export const getPlayerById = async (playerId) => {
               battingStyle
               bowlingStyle
               overs
-              matches
-              totalRuns:Int
-              totalWickets
-              totalBalls
-              totalOvers
-              totalFours
-              totalSixes 
+              matches 
               bowl_rate
               bowl_avg
               st_rate
@@ -112,11 +100,6 @@ export const getPlayerById = async (playerId) => {
 
 export const updatePlayer = async (playerId, data) => {
   const name = data.name;
-  const totalRuns = data.totalRuns;
-  const totalBalls = data.totalBalls;
-  const totalFours = data.totalFours;
-  const totalSixes = data.totalSixes;
-  const totalOvers = data.totalOvers;
   const run = data.run;
   const balls = data.balls;
   const fours = data.fours;
@@ -124,13 +107,12 @@ export const updatePlayer = async (playerId, data) => {
   const overs = data.overs;
   const bowl_runs = data.runs;
   const wickets = data.wickets;
-  const totalWickets = data.totalWickets;
   const res = await axios({
     url: `${baseURL}:${API_PORT}/graphql`,
     method: "post",
     data: {
-      query: `mutation UpdatePlayer($playerId:ID!,$name:String,$run:Int,$totalRuns:Int,$balls:Int,$totalsBalls:Int,$fours:Int,$totalFours:Int,$sixes:Int,$totalSixes:Int,$overs:Int,$totalOvers:Int,$bowl_runs:Int,$wickets:Int,$totalWickets:Int){
-    updatePlayer(playerId:$playerId,name:$name,run:$run,totalRuns:$totalRuns,balls:$balls,totalBalls:$totalBalls,fours:$fours,totalFours:$totalFours,sixes:$sixes,totalSixes:$totalSixes,overs:$overs,totalOvers:$totalOvers,bowl_runs:$bowl_runs,wickets:$wickets,totalWickets:$totalWickets){
+      query: `mutation UpdatePlayer($playerId:ID!,$name:String,$run:Int,$balls:Int,$fours:Int,$sixes:Int,$overs:Int,$bowl_runs:Int,$wickets:Int){
+    updatePlayer(playerId:$playerId,name:$name,run:$run,balls:$balls,fours:$fours,sixes:$sixes,overs:$overs,bowl_runs:$bowl_runs,wickets:$wickets){
       _id
       name
       image
@@ -141,11 +123,6 @@ export const updatePlayer = async (playerId, data) => {
       bowlingStyle
       overs
       matches
-      totalWickets
-      totalBalls
-      totalOvers
-      totalFours
-      totalSixes 
       bowl_rate
       bowl_avg
       st_rate
@@ -161,14 +138,8 @@ export const updatePlayer = async (playerId, data) => {
         fours: fours,
         sixes: sixes,
         overs: overs,
-        totalRuns: totalRuns,
-        totalBalls: totalBalls,
-        totalFours: totalFours,
-        totalSixes: totalSixes,
-        totalOvers: totalOvers,
         bowl_runs: bowl_runs,
         wickets: wickets,
-        totalWickets: totalWickets,
       },
     },
   });
@@ -195,11 +166,6 @@ export const updateScoreOfPlayers = async (
   const strikerovers = strikerData?.overs;
   const strikerbowl_runs = strikerData?.bowl_runs;
   const strikerwickets = strikerData?.wickets;
-  // const strikerTotalRuns = strikerData?.totalRuns;
-  // const strikerTotalBalls = strikerData?.totalBalls;
-  // const strikerTotalWickets = strikerData?.totalWickets;
-  // const strikerTotalFours = strikerData?.totalFours;
-  // const strikerTotalSixes = strikerData?.totalSixes;
  
   const nonStrikerId = nonStrikerData?._id;
   const nonStrikername = nonStrikerData?.name;
@@ -239,12 +205,7 @@ export const updateScoreOfPlayers = async (
       battingStyle
       bowlingStyle
       overs
-      matches
-      totalWickets
-      totalBalls
-      totalOvers
-      totalFours
-      totalSixes 
+      matches 
       bowl_rate
       bowl_avg
       st_rate
@@ -260,12 +221,7 @@ export const updateScoreOfPlayers = async (
       battingStyle
       bowlingStyle
       overs
-      matches
-      totalWickets
-      totalBalls
-      totalOvers
-      totalFours
-      totalSixes 
+      matches 
       bowl_rate
       bowl_avg
       st_rate
@@ -281,12 +237,7 @@ export const updateScoreOfPlayers = async (
       battingStyle
       bowlingStyle
       overs
-      matches
-      totalWickets
-      totalBalls
-      totalOvers
-      totalFours
-      totalSixes 
+      matches 
       bowl_rate
       bowl_avg
       st_rate
@@ -306,12 +257,7 @@ export const updateScoreOfPlayers = async (
           overs
           balls
           st_rate
-          wickets
-          totalWickets
-          totalBalls
-          totalOvers
-          totalFours
-          totalSixes 
+          wickets 
           bowl_runs
         }
         non_striker{
@@ -324,11 +270,6 @@ export const updateScoreOfPlayers = async (
           balls
           st_rate
           wickets
-          totalWickets
-          totalBalls
-          totalOvers
-          totalFours
-          totalSixes 
           bowl_runs
         }
         bowler_1{
@@ -340,12 +281,7 @@ export const updateScoreOfPlayers = async (
           overs
           balls
           st_rate
-          wickets
-          totalWickets
-          totalBalls
-          totalOvers
-          totalFours
-          totalSixes 
+          wickets 
           bowl_runs
         }
         bowler_2
@@ -370,12 +306,7 @@ export const updateScoreOfPlayers = async (
           overs
           balls
           st_rate
-          wickets
-          totalWickets
-          totalBalls
-          totalOvers
-          totalFours
-          totalSixes 
+          wickets 
           bowl_runs
         }
         non_striker{
@@ -388,11 +319,6 @@ export const updateScoreOfPlayers = async (
           balls
           st_rate
           wickets
-          totalWickets
-          totalBalls
-          totalOvers
-          totalFours
-          totalSixes 
           bowl_runs
         }
         bowler_1{
@@ -405,11 +331,6 @@ export const updateScoreOfPlayers = async (
           balls
           st_rate
           wickets
-          totalWickets
-          totalBalls
-          totalOvers
-          totalFours
-          totalSixes 
           bowl_runs
         }
         bowler_2

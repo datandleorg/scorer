@@ -668,6 +668,7 @@ export const updateScorecard = (scoreCardId,scoreCard) => {
                   four
                   six
                   st_rate
+                  out_by
                   }
                   total{
                     runs
@@ -758,6 +759,7 @@ export const updateScorecard = (scoreCardId,scoreCard) => {
                   four
                   six
                   st_rate
+                  out_by
                   }
                   total{
                     runs
